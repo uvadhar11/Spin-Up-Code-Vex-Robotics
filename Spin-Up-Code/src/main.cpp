@@ -17,6 +17,11 @@
 
 #include "vex.h"
 
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// ---- END VEXCODE CONFIGURED DEVICES ----
+
 using namespace vex;
 using namespace std;
 
@@ -26,12 +31,11 @@ competition Competition;
 
 // define your global instances of motors and other devices here
 vex::controller Controller1 = vex::controller();
-brain Brain;
 
-vex::motor LeftFrontMotor = vex::motor(vex::PORT1);
-vex::motor LeftBackMotor = vex::motor(vex::PORT2);
-vex::motor RightFrontMotor = vex::motor(vex::PORT3);
-vex::motor RightBackMotor = vex::motor(vex::PORT4);
+vex::motor LeftFrontMotor = vex::motor(vex::PORT1, ratio18_1, false);
+vex::motor LeftBackMotor = vex::motor(vex::PORT2, ratio18_1, false);
+vex::motor RightFrontMotor = vex::motor(vex::PORT3, ratio18_1, false);
+vex::motor RightBackMotor = vex::motor(vex::PORT4, ratio18_1, true); // inverted
 
 vex::motor TurretMotor = vex::motor(vex::PORT5);
 vex::motor IntakeMotor = vex::motor(vex::PORT6);
@@ -258,7 +262,7 @@ autonRects auton3Rect = {0, 130, rectWidth, rectLength};
 autonRects auton4Rect = {240, 130, rectWidth, rectLength};
  
 // get default buttons (red + blue) and no auton selected showing up on the screen
-int initalizeAutonSelector() {
+void initalizeAutonSelector() {
  Brain.Screen.setFillColor(red);
  Brain.Screen.drawRectangle(auton1Rect.xCoordinate, auton1Rect.yCoordinate, auton1Rect.rectWidth, auton1Rect.rectLength); // screen is 480 by 240. Paramters: x coord, y coord, width, height
  Brain.Screen.setCursor(5,7); // row (up/down for vex brains), column (left/right) -> different numbers on row/cols -> to see, click on question mark near setCursor in the command sidebar under Looks
@@ -287,7 +291,6 @@ int initalizeAutonSelector() {
    Brain.Screen.print("AUTON SELECTED: NONE");
  }
  
- return 0;
 }
  
 // ALLIANCE COLOR SELECTION
@@ -305,7 +308,7 @@ colorRects redButton = {200, 10, colorWidth, colorLength};
 colorRects blueButton = {220 + colorWidth, 10, colorWidth, colorLength};
  
 // Function for Alliance Color Selection
-int initalizeAllianceColorSelector() {
+void initalizeAllianceColorSelector() {
  Brain.Screen.setFillColor(transparent);
  Brain.Screen.setCursor(2,3);
  Brain.Screen.print("ALLIANCE COLOR: ");
@@ -330,26 +333,13 @@ int initalizeAllianceColorSelector() {
    Brain.Screen.setCursor(11, 28);
    Brain.Screen.print("COLOR: NONE");
  }
-  return 0;
+  // return 0;
 };
 
 
-
-void pre_auton(void) {
-  // All activities that occur before the competition starts
-  // Example: clearing encoders, setting servo positions, ...
-
-  // CALIBRATE the gyro and other sensors and stuff (also add as needed)
-  Gyro1.calibrate();
-
-  // AUTON SCREEN SELECTOR STUFF 
-  initalizeAutonSelector(); // set the start rectangle conditions
-  initalizeAllianceColorSelector(); // set the start alliance color selection conditions
-
-  // NEED TO MAKE THIS A CALLBACK FOR BRAIN.SCREEN.PRESSED AND REFACTOR THIS CODE BECAUSE ELSE AUTON AND DRIVER CONTROL WONT RUN
-  // BECAUSE THIS WONT FINISH
-  while (true) { // MIGHT NEED TO DO while pre auton running if the while loop doesn't end
-   if (Brain.Screen.pressing()) { // if the screen is touched. x and y position() allows to get the x and y of the touch on the screen
+// Auton Screen Selector Function
+void autonScreenSelector () {
+  if (Brain.Screen.pressing()) { // if the screen is touched. x and y position() allows to get the x and y of the touch on the screen
      
      // if statements for which auton is selected based on which rectangle is pressed (where press is)
      // use x coordinate for drawing rectangle and NOT for pressing since 2 coordinates are 0!!!
@@ -475,7 +465,153 @@ void pre_auton(void) {
  
      wait(0.00001, seconds); // a small wait for the infinite loop
    }
- }
+}
+
+
+void pre_auton(void) {
+  // All activities that occur before the competition starts
+  // Example: clearing encoders, setting servo positions, ...
+
+  // CALIBRATE the gyro and other sensors and stuff (also add as needed)
+  Gyro1.calibrate();
+
+  // AUTON SCREEN SELECTOR STUFF 
+  initalizeAutonSelector(); // set the start rectangle conditions
+  initalizeAllianceColorSelector(); // set the start alliance color selection conditions
+
+  // NEED TO MAKE THIS A CALLBACK FOR BRAIN.SCREEN.PRESSED AND REFACTOR THIS CODE BECAUSE ELSE AUTON AND DRIVER CONTROL WONT RUN
+  // BECAUSE THIS WONT FINISH
+  // while (true) { // MIGHT NEED TO DO while pre auton running if the while loop doesn't end
+
+  Brain.Screen.pressed(autonScreenSelector);
+
+  //  if (Brain.Screen.pressing()) { // if the screen is touched. x and y position() allows to get the x and y of the touch on the screen
+     
+  //    // if statements for which auton is selected based on which rectangle is pressed (where press is)
+  //    // use x coordinate for drawing rectangle and NOT for pressing since 2 coordinates are 0!!!
+  //    if (Brain.Screen.xPosition() < 240 && (Brain.Screen.yPosition() > auton1Rect.yCoordinate && Brain.Screen.yPosition() < auton1Rect.yCoordinate + auton1Rect.rectLength)) {
+  //      autonSelected = 1;
+  //    }
+  //    else if (Brain.Screen.xPosition() > 240 && (Brain.Screen.yPosition() > auton2Rect.yCoordinate && Brain.Screen.yPosition() < auton2Rect.yCoordinate + auton2Rect.rectLength)) {
+  //      autonSelected = 2;
+  //    }
+  //    else if (Brain.Screen.xPosition() < 240 && (Brain.Screen.yPosition() > auton3Rect.yCoordinate && Brain.Screen.yPosition() < auton3Rect.yCoordinate + auton3Rect.rectLength)) {
+  //      autonSelected = 3;
+  //    }
+  //    else if (Brain.Screen.xPosition() > 240 && (Brain.Screen.yPosition() > auton4Rect.yCoordinate && Brain.Screen.yPosition() < auton4Rect.yCoordinate + auton4Rect.rectLength)) {
+  //      autonSelected = 4;
+  //    }
+ 
+  //    // printing the current auton route selected
+  //    Brain.Screen.setFillColor(transparent); // set fill color to transparent cuz it could be green from below if statements
+ 
+  //    // if statement so if the auton is not 0 (there is an auton), then auton + auton # selected is printed to the brain (instead of none)
+  //    if (autonSelected != 0) {
+  //      // print AUTON instead of NONE if an auton is selected
+  //      Brain.Screen.setCursor(11, 19);
+  //      Brain.Screen.print("AUTON");
+ 
+  //      // print auton program number to the brain next to AUTON and a space after AUTON
+  //      Brain.Screen.setCursor(11, 25);
+  //      Brain.Screen.print(autonSelected);
+  //    }
+ 
+  //    // change the selected auton's rectangle color to green
+  //    if (autonSelected == 1) {
+  //      // reset the other auton routes to their color then change this auton route rectangle to green
+  //      // so multiple rectangles might not be green!!!
+  //      initalizeAutonSelector(); // function that will do the above task
+  //      wait(0.1, sec); // wait time so the rectangles won't flash a different color as well. So computer has time to fill the other rectangles in.
+       
+  //      Brain.Screen.setFillColor(green);
+  //      Brain.Screen.drawRectangle(auton1Rect.xCoordinate, auton1Rect.yCoordinate, auton1Rect.rectWidth, auton1Rect.rectLength);
+  //      Brain.Screen.setCursor(5,7);
+  //      Brain.Screen.print("AUTON 1");
+  //    }
+
+  //    else if (autonSelected == 2) {
+  //      initalizeAutonSelector();
+  //      wait(0.1, sec);
+  //      Brain.Screen.setFillColor(green);
+  //      Brain.Screen.drawRectangle(auton2Rect.xCoordinate, auton2Rect.yCoordinate, auton2Rect.rectWidth, auton2Rect.rectLength); // x coord, y coord, width, height
+  //      Brain.Screen.setCursor(5,34);
+  //      Brain.Screen.print("AUTON 2");
+  //    }
+
+  //    else if (autonSelected == 3) {
+  //      initalizeAutonSelector();
+  //      wait(0.1, sec);
+  //      Brain.Screen.setFillColor(green);
+  //      Brain.Screen.drawRectangle(auton3Rect.xCoordinate, auton3Rect.yCoordinate, auton3Rect.rectWidth, auton3Rect.rectLength);
+  //      Brain.Screen.setCursor(9,7);
+  //      Brain.Screen.print("AUTON 3");
+  //    }
+     
+  //    else if (autonSelected == 4) {
+  //      initalizeAutonSelector();
+  //      wait(0.1, sec);
+  //      Brain.Screen.setFillColor(green);
+  //      Brain.Screen.drawRectangle(auton4Rect.xCoordinate, auton4Rect.yCoordinate, auton4Rect.rectWidth, auton4Rect.rectLength);
+  //      Brain.Screen.setCursor(9,34);
+  //      Brain.Screen.print("AUTON 4");
+  //    }
+ 
+  //    // alliance color selection + green rectangle
+  //    if (Brain.Screen.xPosition() > redButton.xCoordinate && Brain.Screen.xPosition() < redButton.xCoordinate + redButton.rectWidth && Brain.Screen.yPosition() < 50 && Brain.Screen.yPosition() > 10) {
+  //      allianceColor = "RED";
+ 
+  //      // reset other rectangles/buttons
+  //      initalizeAllianceColorSelector();
+  //      wait(0.1, sec);
+ 
+  //      // fill in green for selected alliance color
+  //      Brain.Screen.setFillColor(green);
+  //      Brain.Screen.drawRectangle(redButton.xCoordinate, redButton.yCoordinate, redButton.rectWidth, redButton.rectLength);
+      
+  //      // write the "red" text in the button cuz otherwise the green fill will cover it up
+  //      // (don't need to set fill color because the shape will be green anyways)
+  //      Brain.Screen.setCursor(2, 23);
+  //      Brain.Screen.print("RED");
+ 
+  //      // fill transparent color so doesn't fill green or something + write color selected
+  //      Brain.Screen.setFillColor(transparent);
+      
+  //      // say which alliance color is selected
+  //      Brain.Screen.setCursor(11, 35);
+  //      Brain.Screen.print("RED");
+ 
+  //      // get rid of the "E" from NONE from the default set text for no alliance color selected
+  //      Brain.Screen.setCursor(11, 38);
+  //      Brain.Screen.print(" ");
+  //    }
+  //    else if (Brain.Screen.xPosition() > blueButton.xCoordinate && Brain.Screen.xPosition() < blueButton.xCoordinate + blueButton.rectWidth && Brain.Screen.yPosition() < 50 && Brain.Screen.yPosition() > 10) {
+  //      allianceColor = "BLUE";
+ 
+  //      // reset other rectangles/buttons
+  //      initalizeAllianceColorSelector();
+  //      wait(0.1, sec);
+ 
+  //      // fill in green for selected alliance color
+  //      Brain.Screen.setFillColor(green);
+  //      Brain.Screen.drawRectangle(blueButton.xCoordinate, blueButton.yCoordinate, blueButton.rectWidth, blueButton.rectLength);
+      
+  //      // write the "blue" text in the button cuz otherwise the green fill will cover it up
+  //      // (don't need to set fill color because the shape will be green anyways)
+  //      Brain.Screen.setCursor(2, 33);
+  //      Brain.Screen.print("BLUE");
+ 
+  //      // fill transparent color so doesn't fill green or something + write color selected
+  //      Brain.Screen.setFillColor(transparent);
+ 
+  //      // say which alliance color is selected
+  //      Brain.Screen.setCursor(11, 35);
+  //      Brain.Screen.print("BLUE");
+  //    }
+ 
+ 
+  //    wait(0.00001, seconds); // a small wait for the infinite loop
+  //  }
+//  }
 }
 
 
