@@ -369,7 +369,7 @@ void autonScreenSelector () {
        Brain.Screen.setCursor(11, 25);
        Brain.Screen.print(autonSelected);
      }
- 
+
      // change the selected auton's rectangle color to green
      if (autonSelected == 1) {
        // reset the other auton routes to their color then change this auton route rectangle to green
@@ -629,6 +629,8 @@ void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
+  Brain.Screen.clearScreen();
+  Brain.Screen.print("Auton");
 }
 
 /*---------------------------------------------------------------------------*/
