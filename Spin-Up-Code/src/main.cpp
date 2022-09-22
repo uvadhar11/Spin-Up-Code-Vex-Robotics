@@ -32,10 +32,10 @@ competition Competition;
 // define your global instances of motors and other devices here
 vex::controller Controller1 = vex::controller();
 
-vex::motor LeftFrontMotor = vex::motor(vex::PORT1, ratio18_1, false);
-vex::motor LeftBackMotor = vex::motor(vex::PORT2, ratio18_1, false);
-vex::motor RightFrontMotor = vex::motor(vex::PORT3, ratio18_1, false);
-vex::motor RightBackMotor = vex::motor(vex::PORT4, ratio18_1, true); // inverted
+vex::motor LeftFrontMotor = vex::motor(vex::PORT11, ratio18_1, false);
+vex::motor LeftBackMotor = vex::motor(vex::PORT12, ratio18_1, false);
+vex::motor RightFrontMotor = vex::motor(vex::PORT13, ratio18_1, false);
+vex::motor RightBackMotor = vex::motor(vex::PORT14, ratio18_1, true); // inverted
 
 vex::motor TurretMotor = vex::motor(vex::PORT5);
 vex::motor IntakeMotor = vex::motor(vex::PORT6);
