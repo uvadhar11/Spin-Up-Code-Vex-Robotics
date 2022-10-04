@@ -20,6 +20,7 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 using namespace vex;
@@ -539,6 +540,38 @@ void usercontrol(void) {
     LeftFrontMotor.spin(fwd, forwardVolts + turnVolts, volt);
     RightFrontMotor.spin(reverse, forwardVolts - turnVolts, volt);
 
+    // BUTTONS
+    
+    // INTAKE (L1/R1)
+    if (Controller1.ButtonL1.pressing()) {
+      IntakeMotor.spin(fwd, 12, volt);
+      RollerMotor.spin(fwd, 12, volt);
+    } else if (Controller1.ButtonL2.pressing()) {
+      IntakeMotor.spin(reverse, 12, volt);
+      RollerMotor.spin(reverse, 12, volt);
+    } else {
+      IntakeMotor.stop();
+      RollerMotor.stop();
+    }
+
+    // SHOOTING - B
+    if (Controller1.ButtonB.pressing()) {
+      // shoot stuff then once its shot back, might wanna reset or something so ye
+    }
+
+    // Right arrow - expansion
+    if (Controller1.ButtonA.pressing()) {
+      // Expansion
+    }
+
+    // X - manual rollers (left arrow = manucal override for turret + LED shows state)
+
+    // Y - parking brake if we have one
+    if (Controller1.ButtonY.pressing()) {
+      // pnemuatic parking break if we have something like that (like makes robot off ground maybe or something.
+    }
+
+    // L2/R2 - turret (down arrow = manual override for turret + LED shows state)
 
     // other code HERE
 
