@@ -130,7 +130,7 @@ void drivePID(int desiredValue){
     totalError += error;
 
     // calculate motor power
-    double lateralMotorPower = error * kP + derivative + totalError * kI;//* kD
+    double lateralMotorPower = (error * kP) + derivative + (totalError * kI);//* kD
     
     // move the motors
     LeftFrontMotor.spin(reverse, lateralMotorPower + leftValue, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
@@ -199,7 +199,7 @@ void turnPID(int desiredValue, double multiplier){
 
     //calculate the actual PID (take out the last part (kI) fo drivetrain cuz it makes small changes that messes it up)
     //If you were to have integral: add "+ totalError * kI" at the end then the semicolon
-    double lateralMotorPower = error * kP + derivative + totalError * kI; //* kD
+    double lateralMotorPower = (error * kP) + derivative + (totalError * kI); //* kD
   
     // Spin the motors
     LeftFrontMotor.spin(reverse, lateralMotorPower*multiplier, voltageUnits::volt);//+ turnMotorPower
@@ -500,6 +500,24 @@ void autonomous(void) {
   // ..........................................................................
   Brain.Screen.clearScreen();
   Brain.Screen.print("Auton");
+
+  // AUTONOMOUS ROUTES
+  // 
+  if (autonSelected == 1) {
+    
+  }
+
+  else if (autonSelected == 2) {
+
+  }
+
+  else if (autonSelected == 3) {
+
+  }
+
+  else if (autonSelected == 4) {
+
+  }
 }
 
 /*---------------------------------------------------------------------------*/
@@ -565,11 +583,16 @@ void usercontrol(void) {
     }
 
     // X - manual rollers (left arrow = manucal override for turret + LED shows state)
+    if (Controller1.ButtonX.pressing()) {
+      RollerMotor.spin(fwd, 12, volt);
+    } else {
+      RollerMotor.stop();
+    }
 
     // Y - parking brake if we have one
-    if (Controller1.ButtonY.pressing()) {
+    // if (Controller1.ButtonY.pressing()) {
       // pnemuatic parking break if we have something like that (like makes robot off ground maybe or something.
-    }
+    // }
 
     // L2/R2 - turret (down arrow = manual override for turret + LED shows state)
 
