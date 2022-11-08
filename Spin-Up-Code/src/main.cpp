@@ -21,6 +21,8 @@
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
 // Controller1          controller                    
+// Pneumatics           led           H               
+// Optical              optical       9               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 using namespace vex;
@@ -31,17 +33,18 @@ competition Competition;
 
 
 // define your global instances of motors and other devices here
-vex::controller Controller1 = vex::controller();
+// vex::controller Controller1 = vex::controller();
+// flywheel front
+vex::motor LeftFrontMotor = vex::motor(vex::PORT1, ratio18_1, false);
+vex::motor LeftBackMotor = vex::motor(vex::PORT2, ratio18_1, false);
+vex::motor RightFrontMotor = vex::motor(vex::PORT3, ratio18_1, false);
+vex::motor RightBackMotor = vex::motor(vex::PORT4, ratio18_1, true); // inverted
 
-vex::motor LeftFrontMotor = vex::motor(vex::PORT11, ratio18_1, false);
-vex::motor LeftBackMotor = vex::motor(vex::PORT12, ratio18_1, false);
-vex::motor RightFrontMotor = vex::motor(vex::PORT13, ratio18_1, false);
-vex::motor RightBackMotor = vex::motor(vex::PORT14, ratio18_1, true); // inverted
-
-vex::motor TurretMotor = vex::motor(vex::PORT5);
-vex::motor IntakeMotor = vex::motor(vex::PORT6);
-vex::motor RollerMotor = vex::motor(vex::PORT7);
-vex::motor FlywheelMotor = vex::motor(vex::PORT8);
+// vex::motor TurretMotor = vex::motor(vex::PORT5);
+vex::motor IntakeMotor = vex::motor(vex::PORT5);
+// vex::motor RollerMotor = vex::motor(vex::PORT7);
+vex::motor FlywheelMotor = vex::motor(vex::PORT6);
+vex::motor FlywheelMotor2 = vex::motor(vex::PORT7);
 
 inertial Gyro1 = inertial(PORT9);
 
@@ -50,6 +53,7 @@ inertial Gyro1 = inertial(PORT9);
 int selfCorrect = 3;
 int stopPID = 30;
 int ticks = 15000; // for faster turn speed. So doesn't break everything else if turn doesn't work.
+int flywheelPower = 12; // to manage flywheel speed
 
 
 /*------------------------------------------------------------------------*/
@@ -474,13 +478,13 @@ void pre_auton(void) {
   // Example: clearing encoders, setting servo positions, ...
 
   // CALIBRATE the gyro and other sensors and stuff (also add as needed)
-  Gyro1.calibrate();
+  // Gyro1.calibrate();
 
   // AUTON SCREEN SELECTOR STUFF 
-  initalizeAutonSelector(); // set the start rectangle conditions
-  initalizeAllianceColorSelector(); // set the start alliance color selection conditions
+  // initalizeAutonSelector(); // set the start rectangle conditions
+  // initalizeAllianceColorSelector(); // set the start alliance color selection conditions
 
-  Brain.Screen.pressed(autonScreenSelector);
+  // Brain.Screen.pressed(autonScreenSelector);
 }
 
 
@@ -498,26 +502,34 @@ void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
-  Brain.Screen.clearScreen();
-  Brain.Screen.print("Auton");
+  // Brain.Screen.clearScreen();
+  // Brain.Screen.print("Auton");
 
   // AUTONOMOUS ROUTES
   // 
-  if (autonSelected == 1) {
-    
-  }
+  // if (autonSelected == 1) {
+    // drivePID(100);
 
-  else if (autonSelected == 2) {
+    // IntakeMotor.spinFor(fwd, 100, vex::rotationUnits::deg);
+  LeftFrontMotor.rotateFor(reverse, 400, rotationUnits::deg);
+  LeftBackMotor.rotateFor(reverse, 400, rotationUnits::deg);
+  RightFrontMotor.rotateFor(reverse, 400, rotationUnits::deg);
+  RightBackMotor.rotateFor(fwd, 400, rotationUnits::deg);
 
-  }
+  IntakeMotor.rotateFor(fwd, 750, rotationUnits::deg);
+  // }
 
-  else if (autonSelected == 3) {
+  // else if (autonSelected == 2) {
 
-  }
+  // }
 
-  else if (autonSelected == 4) {
+  // else if (autonSelected == 3) {
 
-  }
+  // }
+
+  // else if (autonSelected == 4) {
+
+  // }
 }
 
 /*---------------------------------------------------------------------------*/
@@ -563,30 +575,54 @@ void usercontrol(void) {
     // INTAKE (L1/R1)
     if (Controller1.ButtonL1.pressing()) {
       IntakeMotor.spin(fwd, 12, volt);
-      RollerMotor.spin(fwd, 12, volt);
+      // RollerMotor.spin(fwd, 12, volt);
     } else if (Controller1.ButtonL2.pressing()) {
       IntakeMotor.spin(reverse, 12, volt);
-      RollerMotor.spin(reverse, 12, volt);
+      // RollerMotor.spin(reverse, 12, volt);
     } else {
       IntakeMotor.stop();
-      RollerMotor.stop();
+      // RollerMotor.stop();
     }
 
     // SHOOTING - B
     if (Controller1.ButtonB.pressing()) {
       // shoot stuff then once its shot back, might wanna reset or something so ye
+      FlywheelMotor.spin(reverse, 12, voltageUnits::volt);
+      FlywheelMotor2.spin(fwd, 12, voltageUnits::volt);
+    } else {
+      FlywheelMotor.stop();
+      FlywheelMotor2.stop();
     }
 
-    // Right arrow - expansion
-    if (Controller1.ButtonA.pressing()) {
+    // if (Controller1.ButtonDown.pressing()) {
+    //   if (flywheelPower == 8) flywheelPower = 12;
+    //   if (flywheelPower == 12) flywheelPower = 8;
+    // }
+
+    if (Controller1.ButtonR1.pressing()) {
+      Pneumatics.off();
+      wait(0.25, sec); // 0.1 for speed
+    } else {
+      Pneumatics.on();
+    }
+
+    // Left arrow - expansion
+    if (Controller1.ButtonLeft.pressing()) {
       // Expansion
     }
 
-    // X - manual rollers (left arrow = manucal override for turret + LED shows state)
+    // X - manual rollers (left arrow = manual override for turret + LED shows state)
+    // if (Controller1.ButtonX.pressing()) {
+    //   RollerMotor.spin(fwd, 12, volt);
+    // } else {
+    //   RollerMotor.stop();
+    // }
+
+    // AUTO-ROLLERS
     if (Controller1.ButtonX.pressing()) {
-      RollerMotor.spin(fwd, 12, volt);
-    } else {
-      RollerMotor.stop();
+      while (!(Optical.color() == vex::color::red)) {
+        IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+      }
     }
 
     // Y - parking brake if we have one

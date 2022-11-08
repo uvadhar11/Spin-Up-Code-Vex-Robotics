@@ -9,6 +9,8 @@ brain  Brain;
 
 // VEXcode device constructors
 controller Controller1 = controller(primary);
+led Pneumatics = led(Brain.ThreeWirePort.H);
+optical Optical = optical(PORT9);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable
