@@ -694,7 +694,7 @@ void usercontrol(void) {
       // pnemuatic parking break if we have something like that (like makes robot off ground maybe or something.
     // }
     if (Controller1.ButtonY.pressing()) {
-      ExpansionPneumatics.off();
+      ExpansionPneumatics.on();
     }
 
     // L2/R2 - turret (down arrow = manual override for turret + LED shows state)
