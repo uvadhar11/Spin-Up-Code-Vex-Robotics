@@ -6,6 +6,7 @@ extern brain Brain;
 extern controller Controller1;
 extern led Pneumatics;
 extern optical Optical;
+extern led ExpansionPneumatics;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

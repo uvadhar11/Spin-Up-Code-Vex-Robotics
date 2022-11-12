@@ -23,6 +23,7 @@
 // Controller1          controller                    
 // Pneumatics           led           H               
 // Optical              optical       9               
+// ExpansionPneumatics  led           B               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 using namespace vex;
@@ -511,12 +512,12 @@ void autonomous(void) {
     // drivePID(100);
 
     // IntakeMotor.spinFor(fwd, 100, vex::rotationUnits::deg);
-  LeftFrontMotor.rotateFor(reverse, 400, rotationUnits::deg);
-  LeftBackMotor.rotateFor(reverse, 400, rotationUnits::deg);
-  RightFrontMotor.rotateFor(reverse, 400, rotationUnits::deg);
-  RightBackMotor.rotateFor(fwd, 400, rotationUnits::deg);
+  // LeftFrontMotor.rotateFor(reverse, 400, rotationUnits::deg);
+  // LeftBackMotor.rotateFor(reverse, 400, rotationUnits::deg);
+  // RightFrontMotor.rotateFor(reverse, 400, rotationUnits::deg);
+  // RightBackMotor.rotateFor(fwd, 400, rotationUnits::deg);
 
-  IntakeMotor.rotateFor(fwd, 750, rotationUnits::deg);
+  // IntakeMotor.rotateFor(fwd, 750, rotationUnits::deg);
   // }
 
   // else if (autonSelected == 2) {
@@ -530,6 +531,49 @@ void autonomous(void) {
   // else if (autonSelected == 4) {
 
   // }
+
+  // AUTONOMOUS
+  LeftFrontMotor.rotateFor(reverse, 400, rotationUnits::deg);
+  LeftBackMotor.rotateFor(reverse, 400, rotationUnits::deg);
+  RightFrontMotor.rotateFor(reverse, 400, rotationUnits::deg);
+  RightBackMotor.rotateFor(fwd, 400, rotationUnits::deg);
+
+  // optical stuff - could make it a function (spin rollers)
+  if (allianceColor == "RED") {
+    while (!(Optical.color() == vex::color::red)) {
+      IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+    }
+  }
+  else if (allianceColor == "BLUE") {
+    while (!(Optical.color() == vex::color::blue)) {
+      IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+    }
+  }
+
+  // drive forward a bit
+  drivePID(100);
+
+  // turn
+  turnPID(90, 1);
+
+  // drive 1/4 or so of that field
+  drivePID(2000);
+
+  // turn to align with high goal
+  turnPID(90, 1);
+
+  // shoot preloads
+  // spin flywheel
+  FlywheelMotor.spin(reverse, 12, voltageUnits::volt);
+  FlywheelMotor2.spin(fwd, 12, voltageUnits::volt);
+
+  // wait to spin it up a little
+  wait(1, sec);
+
+  // shoot
+  Pneumatics.off();
+  wait(0.1, sec);
+  Pneumatics.off();
 }
 
 /*---------------------------------------------------------------------------*/
@@ -544,6 +588,8 @@ void autonomous(void) {
 
 void usercontrol(void) {
   // User control code here, inside the loop
+  int autoRollers = true;
+
   while (true) {
     // This is the main execution loop for the user control program.
     // Each time through the loop your program should update motor + servo
@@ -607,9 +653,10 @@ void usercontrol(void) {
     }
 
     // Left arrow - expansion
-    if (Controller1.ButtonLeft.pressing()) {
-      // Expansion
-    }
+    // if (Controller1.ButtonLeft.pressing()) {
+    //   // Expansion
+    //   ExpansionPneumatics.off();
+    // }
 
     // X - manual rollers (left arrow = manual override for turret + LED shows state)
     // if (Controller1.ButtonX.pressing()) {
@@ -618,17 +665,37 @@ void usercontrol(void) {
     //   RollerMotor.stop();
     // }
 
-    // AUTO-ROLLERS
+    // AUTO-ROLLERS - Button X
     if (Controller1.ButtonX.pressing()) {
-      while (!(Optical.color() == vex::color::red)) {
+      if (autoRollers) {
+        if (allianceColor == "RED") {
+          while (!(Optical.color() == vex::color::red)) {
+            IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+          }
+        }
+        else if (allianceColor == "BLUE") {
+          while (!(Optical.color() == vex::color::blue)) {
+            IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+          }
+        }
+      }
+      else if (autoRollers == false) {
         IntakeMotor.spin(fwd, 12, voltageUnits::volt);
       }
     }
+
+    // Disable auto-rollers - Button Right (might replace with button up if do turret)
+    if (Controller1.ButtonRight.pressing()) {
+      autoRollers = !autoRollers;
+    } 
 
     // Y - parking brake if we have one
     // if (Controller1.ButtonY.pressing()) {
       // pnemuatic parking break if we have something like that (like makes robot off ground maybe or something.
     // }
+    if (Controller1.ButtonY.pressing()) {
+      ExpansionPneumatics.off();
+    }
 
     // L2/R2 - turret (down arrow = manual override for turret + LED shows state)
 
