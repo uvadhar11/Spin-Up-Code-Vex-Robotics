@@ -22,8 +22,16 @@
 // [Name]               [Type]        [Port(s)]
 // Controller1          controller                    
 // Pneumatics           led           H               
-// Optical              optical       9               
+// Optical              optical       10              
 // ExpansionPneumatics  led           C               
+// LeftFrontMotor       motor         1               
+// LeftBackMotor        motor         2               
+// RightFrontMotor      motor         3               
+// RightBackMotor       motor         4               
+// IntakeMotor          motor         5               
+// FlywheelMotor        motor         6               
+// FlywheelMotor2       motor         7               
+// Gyro1                inertial      9               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 using namespace vex;
@@ -36,18 +44,16 @@ competition Competition;
 // define your global instances of motors and other devices here
 // vex::controller Controller1 = vex::controller();
 // flywheel front
-vex::motor LeftFrontMotor = vex::motor(vex::PORT1, ratio18_1, false);
-vex::motor LeftBackMotor = vex::motor(vex::PORT2, ratio18_1, false);
-vex::motor RightFrontMotor = vex::motor(vex::PORT3, ratio18_1, false);
-vex::motor RightBackMotor = vex::motor(vex::PORT4, ratio18_1, true); // inverted
+// vex::motor LeftFrontMotor = vex::motor(vex::PORT1, ratio18_1, false);
+// vex::motor LeftBackMotor = vex::motor(vex::PORT2, ratio18_1, false);
+// vex::motor RightFrontMotor = vex::motor(vex::PORT3, ratio18_1, false);
+// vex::motor RightBackMotor = vex::motor(vex::PORT4, ratio18_1, true); // inverted
 
-// vex::motor TurretMotor = vex::motor(vex::PORT5);
-vex::motor IntakeMotor = vex::motor(vex::PORT5);
-// vex::motor RollerMotor = vex::motor(vex::PORT7);
-vex::motor FlywheelMotor = vex::motor(vex::PORT6);
-vex::motor FlywheelMotor2 = vex::motor(vex::PORT7);
+// vex::motor IntakeMotor = vex::motor(vex::PORT5);
+// vex::motor FlywheelMotor = vex::motor(vex::PORT6);
+// vex::motor FlywheelMotor2 = vex::motor(vex::PORT7);
 
-inertial Gyro1 = inertial(PORT9);
+// inertial Gyro1 = inertial(PORT9);
 
 
 // GLOBAL VARIABLES
@@ -579,16 +585,63 @@ void autonomous(void) {
   // Pneumatics.off();
   // wait(0.1, sec);
   // Pneumatics.off();
-      LeftFrontMotor.startRotateFor(reverse, 1000, rotationUnits::deg);
-      LeftBackMotor.startRotateFor(reverse, 1000, rotationUnits::deg);
-      RightFrontMotor.startRotateFor(reverse, 1000, rotationUnits::deg);
-      RightBackMotor.startRotateFor(reverse, 1000, rotationUnits::deg);
+      // LeftFrontMotor.startRotateFor(reverse, 1000, rotationUnits::deg);
+      // LeftBackMotor.startRotateFor(reverse, 1000, rotationUnits::deg);
+      // RightFrontMotor.startRotateFor(reverse, 1000, rotationUnits::deg);
+      // RightBackMotor.startRotateFor(reverse, 1000, rotationUnits::deg);
+
+    // LeftFrontMotor.spinFor(reverse, 50, rotationUnits::deg);//+ turnMotorPower (if turning). L/R for self-correction
+    // RightFrontMotor.spinFor(fwd, 50, rotationUnits::deg);//- turnMotorPower
+    // LeftBackMotor.spinFor(reverse, 50, rotationUnits::deg);//+ turnMotorPower
+    // RightBackMotor.spinFor(reverse, 50, rotationUnits::deg);
+
+    // CODE
+    // LeftFrontMotor.spin(reverse, 8, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
+    // RightFrontMotor.spin(fwd, 8, voltageUnits::volt);//- turnMotorPower
+    // LeftBackMotor.spin(reverse, 8, voltageUnits::volt);//+ turnMotorPower
+    // RightBackMotor.spin(reverse, 8, voltageUnits::volt);
+
+    // wait(2, sec);
+
+    // LeftFrontMotor.stop();
+    // LeftBackMotor.stop();
+    // RightBackMotor.stop();
+    // RightFrontMotor.stop();
 
       // or without optical
-      IntakeMotor.spinFor(0.2, seconds);
+    // IntakeMotor.spinFor(0.2, seconds);
+    // IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+
+      LeftFrontMotor.spin(reverse, 4, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
+      RightFrontMotor.spin(fwd, 4, voltageUnits::volt);//- turnMotorPower
+      LeftBackMotor.spin(reverse, 4, voltageUnits::volt);//+ turnMotorPower
+      RightBackMotor.spin(reverse, 4, voltageUnits::volt);
+      IntakeMotor.spin(fwd, 8, voltageUnits::volt);
+
+      wait(0.25, sec);
+
+      LeftFrontMotor.stop();
+      LeftBackMotor.stop();
+      RightBackMotor.stop();
+      RightFrontMotor.stop();
+      IntakeMotor.stop();
+
   }
   else if (autonSelected == 2) {
-    Brain.Screen.print("Auton 2");
+    // Brain.Screen.print("Auton 2");
+      LeftFrontMotor.spin(reverse, 4, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
+      RightFrontMotor.spin(fwd, 4, voltageUnits::volt);//- turnMotorPower
+      LeftBackMotor.spin(reverse, 4, voltageUnits::volt);//+ turnMotorPower
+      RightBackMotor.spin(reverse, 4, voltageUnits::volt);
+      IntakeMotor.spin(reverse, 8, voltageUnits::volt);
+
+      wait(0.25, sec);
+
+      LeftFrontMotor.stop();
+      LeftBackMotor.stop();
+      RightBackMotor.stop();
+      RightFrontMotor.stop();
+      IntakeMotor.stop();
   } 
   else if (autonSelected == 3) {
     Brain.Screen.print("Auton 3");
@@ -602,6 +655,7 @@ void autonomous(void) {
     turnPID(45, 1);
 
     // move to middle of field
+    // drivePID(3000);
 
 
     // wait for expansion
@@ -741,11 +795,11 @@ void usercontrol(void) {
     // other code HERE
 
     // auton testing
-    if (Controller1.ButtonDown.pressing()) {
-      LeftFrontMotor.startRotateFor(reverse, 1000, rotationUnits::deg);
-      LeftBackMotor.startRotateFor(reverse, 1000, rotationUnits::deg);
-      RightFrontMotor.startRotateFor(fwd, 1000, rotationUnits::deg);
-      RightBackMotor.rotateFor(fwd, 1000, rotationUnits::deg);
+    // if (Controller1.ButtonDown.pressing()) {
+      // LeftFrontMotor.startRotateFor(reverse, 1000, rotationUnits::deg);
+      // LeftBackMotor.startRotateFor(reverse, 1000, rotationUnits::deg);
+      // RightFrontMotor.startRotateFor(fwd, 1000, rotationUnits::deg);
+      // RightBackMotor.rotateFor(fwd, 1000, rotationUnits::deg);
 
       // // or without optical
       // IntakeMotor.spinFor(0.2, seconds);
@@ -775,7 +829,42 @@ void usercontrol(void) {
       // wait(0.1, sec);
       // Pneumatics.off();
       // IntakeMotor.spinFor(2, seconds);
-    }
+      // turnPID(45, 1);
+
+      // move to middle of field
+      // drivePID(700);
+
+
+      // wait for expansion
+      // wait(52, sec);
+
+      // expansion
+      // ExpansionPneumatics.off();
+
+      // drive back to a corner
+      // drivePID(-600);
+
+      // drivePID(-75);
+      // IntakeMotor.spinFor(2, seconds);
+
+      // yees
+      // LeftFrontMotor.spin(reverse, 4, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
+      // RightFrontMotor.spin(fwd, 4, voltageUnits::volt);//- turnMotorPower
+      // LeftBackMotor.spin(reverse, 4, voltageUnits::volt);//+ turnMotorPower
+      // RightBackMotor.spin(reverse, 4, voltageUnits::volt);
+      // IntakeMotor.spin(fwd, 8, voltageUnits::volt);
+
+      // wait(0.25, sec);
+
+      // LeftFrontMotor.stop();
+      // LeftBackMotor.stop();
+      // RightBackMotor.stop();
+      // RightFrontMotor.stop();
+      // IntakeMotor.stop();
+      //   or without optical
+      // IntakeMotor.spinFor(0.2, seconds);
+      // IntakeMotor.spinFor(2, seconds);
+    // }
 
     wait(20, msec); // Sleep the task for a short amount of time to prevent wasted resources
   }
