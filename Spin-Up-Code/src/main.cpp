@@ -23,7 +23,7 @@
 // Controller1          controller                    
 // Pneumatics           led           H               
 // Optical              optical       9               
-// ExpansionPneumatics  led           B               
+// ExpansionPneumatics  led           C               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 using namespace vex;
@@ -533,6 +533,8 @@ void autonomous(void) {
   // }
 
   // AUTONOMOUS
+
+  // drive back into rollers
   LeftFrontMotor.rotateFor(reverse, 400, rotationUnits::deg);
   LeftBackMotor.rotateFor(reverse, 400, rotationUnits::deg);
   RightFrontMotor.rotateFor(reverse, 400, rotationUnits::deg);
@@ -540,12 +542,12 @@ void autonomous(void) {
 
   // optical stuff - could make it a function (spin rollers)
   if (allianceColor == "RED") {
-    while (!(Optical.color() == vex::color::red)) {
+    while (!(Optical.color() == vex::color::blue)) {
       IntakeMotor.spin(fwd, 12, voltageUnits::volt);
     }
   }
   else if (allianceColor == "BLUE") {
-    while (!(Optical.color() == vex::color::blue)) {
+    while (!(Optical.color() == vex::color::red)) {
       IntakeMotor.spin(fwd, 12, voltageUnits::volt);
     }
   }
@@ -553,13 +555,13 @@ void autonomous(void) {
   // drive forward a bit
   drivePID(100);
 
-  // turn
-  turnPID(90, 1);
+  // turn (right 45 when 0 is facing forward)
+  turnPID(45, 1);
 
   // drive 1/4 or so of that field
   drivePID(2000);
 
-  // turn to align with high goal
+  // turn to align with high goal (90 to the left if parallel with auton divider lines and perpendicular with high goal)
   turnPID(90, 1);
 
   // shoot preloads
@@ -694,7 +696,7 @@ void usercontrol(void) {
       // pnemuatic parking break if we have something like that (like makes robot off ground maybe or something.
     // }
     if (Controller1.ButtonY.pressing()) {
-      ExpansionPneumatics.on();
+      ExpansionPneumatics.off();
     }
 
     // L2/R2 - turret (down arrow = manual override for turret + LED shows state)
