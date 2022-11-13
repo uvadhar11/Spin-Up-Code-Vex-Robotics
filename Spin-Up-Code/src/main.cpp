@@ -479,13 +479,13 @@ void pre_auton(void) {
   // Example: clearing encoders, setting servo positions, ...
 
   // CALIBRATE the gyro and other sensors and stuff (also add as needed)
-  // Gyro1.calibrate();
+  Gyro1.calibrate();
 
   // AUTON SCREEN SELECTOR STUFF 
-  // initalizeAutonSelector(); // set the start rectangle conditions
-  // initalizeAllianceColorSelector(); // set the start alliance color selection conditions
+  initalizeAutonSelector(); // set the start rectangle conditions
+  initalizeAllianceColorSelector(); // set the start alliance color selection conditions
 
-  // Brain.Screen.pressed(autonScreenSelector);
+  Brain.Screen.pressed(autonScreenSelector);
 }
 
 
@@ -533,49 +533,86 @@ void autonomous(void) {
   // }
 
   // AUTONOMOUS
+  if (autonSelected == 1) {
+  // // drive back into rollers
+  // LeftFrontMotor.rotateFor(reverse, 400, rotationUnits::deg);
+  // LeftBackMotor.rotateFor(reverse, 400, rotationUnits::deg);
+  // RightFrontMotor.rotateFor(reverse, 400, rotationUnits::deg);
+  // RightBackMotor.rotateFor(fwd, 400, rotationUnits::deg);
 
-  // drive back into rollers
-  LeftFrontMotor.rotateFor(reverse, 400, rotationUnits::deg);
-  LeftBackMotor.rotateFor(reverse, 400, rotationUnits::deg);
-  RightFrontMotor.rotateFor(reverse, 400, rotationUnits::deg);
-  RightBackMotor.rotateFor(fwd, 400, rotationUnits::deg);
+  // // optical stuff - could make it a function (spin rollers)
+  // if (allianceColor == "RED") {
+  //   while (!(Optical.color() == vex::color::blue)) {
+  //     IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+  //   }
+  // }
+  // else if (allianceColor == "BLUE") {
+  //   while (!(Optical.color() == vex::color::red)) {
+  //     IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+  //   }
+  // }
 
-  // optical stuff - could make it a function (spin rollers)
-  if (allianceColor == "RED") {
-    while (!(Optical.color() == vex::color::blue)) {
-      IntakeMotor.spin(fwd, 12, voltageUnits::volt);
-    }
+  // // or without optical
+  // IntakeMotor.spinFor(0.2, seconds);
+
+  // // drive forward a bit
+  // drivePID(100);
+
+  // // turn (right 45 when 0 is facing forward)
+  // turnPID(45, 1);
+
+  // // drive 1/4 or so of that field
+  // drivePID(2000);
+
+  // // turn to align with high goal (90 to the left if parallel with auton divider lines and perpendicular with high goal)
+  // turnPID(90, 1);
+
+  // // shoot preloads
+  // // spin flywheel
+  // FlywheelMotor.spin(reverse, 12, voltageUnits::volt);
+  // FlywheelMotor2.spin(fwd, 12, voltageUnits::volt);
+
+  // // wait to spin it up a little
+  // wait(1, sec);
+
+  // // shoot
+  // Pneumatics.off();
+  // wait(0.1, sec);
+  // Pneumatics.off();
+      LeftFrontMotor.startRotateFor(reverse, 1000, rotationUnits::deg);
+      LeftBackMotor.startRotateFor(reverse, 1000, rotationUnits::deg);
+      RightFrontMotor.startRotateFor(reverse, 1000, rotationUnits::deg);
+      RightBackMotor.startRotateFor(reverse, 1000, rotationUnits::deg);
+
+      // or without optical
+      IntakeMotor.spinFor(0.2, seconds);
   }
-  else if (allianceColor == "BLUE") {
-    while (!(Optical.color() == vex::color::red)) {
-      IntakeMotor.spin(fwd, 12, voltageUnits::volt);
-    }
+  else if (autonSelected == 2) {
+    Brain.Screen.print("Auton 2");
+  } 
+  else if (autonSelected == 3) {
+    Brain.Screen.print("Auton 3");
   }
+  else if (autonSelected == 4) {
+    Brain.Screen.print("SKILLS");
 
-  // drive forward a bit
-  drivePID(100);
+    // autonomous
 
-  // turn (right 45 when 0 is facing forward)
-  turnPID(45, 1);
+    // rotate before expansion
+    turnPID(45, 1);
 
-  // drive 1/4 or so of that field
-  drivePID(2000);
+    // move to middle of field
 
-  // turn to align with high goal (90 to the left if parallel with auton divider lines and perpendicular with high goal)
-  turnPID(90, 1);
 
-  // shoot preloads
-  // spin flywheel
-  FlywheelMotor.spin(reverse, 12, voltageUnits::volt);
-  FlywheelMotor2.spin(fwd, 12, voltageUnits::volt);
+    // wait for expansion
+    wait(50, sec);
 
-  // wait to spin it up a little
-  wait(1, sec);
+    // expansion
+    ExpansionPneumatics.off();
 
-  // shoot
-  Pneumatics.off();
-  wait(0.1, sec);
-  Pneumatics.off();
+    // drive back to a corner
+    drivePID(-3000);
+  }
 }
 
 /*---------------------------------------------------------------------------*/
@@ -633,7 +670,7 @@ void usercontrol(void) {
     }
 
     // SHOOTING - B
-    if (Controller1.ButtonB.pressing()) {
+    if (Controller1.ButtonR1.pressing()) {
       // shoot stuff then once its shot back, might wanna reset or something so ye
       FlywheelMotor.spin(reverse, 12, voltageUnits::volt);
       FlywheelMotor2.spin(fwd, 12, voltageUnits::volt);
@@ -647,7 +684,7 @@ void usercontrol(void) {
     //   if (flywheelPower == 12) flywheelPower = 8;
     // }
 
-    if (Controller1.ButtonR1.pressing()) {
+    if (Controller1.ButtonR2.pressing()) {
       Pneumatics.off();
       wait(0.25, sec); // 0.1 for speed
     } else {
@@ -671,12 +708,12 @@ void usercontrol(void) {
     if (Controller1.ButtonX.pressing()) {
       if (autoRollers) {
         if (allianceColor == "RED") {
-          while (!(Optical.color() == vex::color::red)) {
+          while (!(Optical.color() == vex::color::blue)) {
             IntakeMotor.spin(fwd, 12, voltageUnits::volt);
           }
         }
         else if (allianceColor == "BLUE") {
-          while (!(Optical.color() == vex::color::blue)) {
+          while (!(Optical.color() == vex::color::red)) {
             IntakeMotor.spin(fwd, 12, voltageUnits::volt);
           }
         }
@@ -702,6 +739,43 @@ void usercontrol(void) {
     // L2/R2 - turret (down arrow = manual override for turret + LED shows state)
 
     // other code HERE
+
+    // auton testing
+    if (Controller1.ButtonDown.pressing()) {
+      LeftFrontMotor.startRotateFor(reverse, 1000, rotationUnits::deg);
+      LeftBackMotor.startRotateFor(reverse, 1000, rotationUnits::deg);
+      RightFrontMotor.startRotateFor(fwd, 1000, rotationUnits::deg);
+      RightBackMotor.rotateFor(fwd, 1000, rotationUnits::deg);
+
+      // // or without optical
+      // IntakeMotor.spinFor(0.2, seconds);
+
+      // // drive forward a bit
+      // drivePID(100);
+
+      // // turn (right 45 when 0 is facing forward)
+      // turnPID(45, 1);
+
+      // // drive 1/4 or so of that field
+      // drivePID(2000);
+
+      // // turn to align with high goal (90 to the left if parallel with auton divider lines and perpendicular with high goal)
+      // turnPID(90, 1);
+
+      // // shoot preloads
+      // // spin flywheel
+      // FlywheelMotor.spin(reverse, 12, voltageUnits::volt);
+      // FlywheelMotor2.spin(fwd, 12, voltageUnits::volt);
+
+      // // wait to spin it up a little
+      // wait(1, sec);
+
+      // // shoot
+      // Pneumatics.off();
+      // wait(0.1, sec);
+      // Pneumatics.off();
+      // IntakeMotor.spinFor(2, seconds);
+    }
 
     wait(20, msec); // Sleep the task for a short amount of time to prevent wasted resources
   }
