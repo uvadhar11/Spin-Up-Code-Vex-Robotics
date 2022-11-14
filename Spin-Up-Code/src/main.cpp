@@ -509,109 +509,9 @@ void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
-  // Brain.Screen.clearScreen();
-  // Brain.Screen.print("Auton");
 
-  // AUTONOMOUS ROUTES
-  // 
-  // if (autonSelected == 1) {
-    // drivePID(100);
-
-    // IntakeMotor.spinFor(fwd, 100, vex::rotationUnits::deg);
-  // LeftFrontMotor.rotateFor(reverse, 400, rotationUnits::deg);
-  // LeftBackMotor.rotateFor(reverse, 400, rotationUnits::deg);
-  // RightFrontMotor.rotateFor(reverse, 400, rotationUnits::deg);
-  // RightBackMotor.rotateFor(fwd, 400, rotationUnits::deg);
-
-  // IntakeMotor.rotateFor(fwd, 750, rotationUnits::deg);
-  // }
-
-  // else if (autonSelected == 2) {
-
-  // }
-
-  // else if (autonSelected == 3) {
-
-  // }
-
-  // else if (autonSelected == 4) {
-
-  // }
-
-  // AUTONOMOUS
+  // basic autonomous code for rollers (one color) - check what color
   if (autonSelected == 1) {
-  // // drive back into rollers
-  // LeftFrontMotor.rotateFor(reverse, 400, rotationUnits::deg);
-  // LeftBackMotor.rotateFor(reverse, 400, rotationUnits::deg);
-  // RightFrontMotor.rotateFor(reverse, 400, rotationUnits::deg);
-  // RightBackMotor.rotateFor(fwd, 400, rotationUnits::deg);
-
-  // // optical stuff - could make it a function (spin rollers)
-  // if (allianceColor == "RED") {
-  //   while (!(Optical.color() == vex::color::blue)) {
-  //     IntakeMotor.spin(fwd, 12, voltageUnits::volt);
-  //   }
-  // }
-  // else if (allianceColor == "BLUE") {
-  //   while (!(Optical.color() == vex::color::red)) {
-  //     IntakeMotor.spin(fwd, 12, voltageUnits::volt);
-  //   }
-  // }
-
-  // // or without optical
-  // IntakeMotor.spinFor(0.2, seconds);
-
-  // // drive forward a bit
-  // drivePID(100);
-
-  // // turn (right 45 when 0 is facing forward)
-  // turnPID(45, 1);
-
-  // // drive 1/4 or so of that field
-  // drivePID(2000);
-
-  // // turn to align with high goal (90 to the left if parallel with auton divider lines and perpendicular with high goal)
-  // turnPID(90, 1);
-
-  // // shoot preloads
-  // // spin flywheel
-  // FlywheelMotor.spin(reverse, 12, voltageUnits::volt);
-  // FlywheelMotor2.spin(fwd, 12, voltageUnits::volt);
-
-  // // wait to spin it up a little
-  // wait(1, sec);
-
-  // // shoot
-  // Pneumatics.off();
-  // wait(0.1, sec);
-  // Pneumatics.off();
-      // LeftFrontMotor.startRotateFor(reverse, 1000, rotationUnits::deg);
-      // LeftBackMotor.startRotateFor(reverse, 1000, rotationUnits::deg);
-      // RightFrontMotor.startRotateFor(reverse, 1000, rotationUnits::deg);
-      // RightBackMotor.startRotateFor(reverse, 1000, rotationUnits::deg);
-
-    // LeftFrontMotor.spinFor(reverse, 50, rotationUnits::deg);//+ turnMotorPower (if turning). L/R for self-correction
-    // RightFrontMotor.spinFor(fwd, 50, rotationUnits::deg);//- turnMotorPower
-    // LeftBackMotor.spinFor(reverse, 50, rotationUnits::deg);//+ turnMotorPower
-    // RightBackMotor.spinFor(reverse, 50, rotationUnits::deg);
-
-    // CODE
-    // LeftFrontMotor.spin(reverse, 8, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
-    // RightFrontMotor.spin(fwd, 8, voltageUnits::volt);//- turnMotorPower
-    // LeftBackMotor.spin(reverse, 8, voltageUnits::volt);//+ turnMotorPower
-    // RightBackMotor.spin(reverse, 8, voltageUnits::volt);
-
-    // wait(2, sec);
-
-    // LeftFrontMotor.stop();
-    // LeftBackMotor.stop();
-    // RightBackMotor.stop();
-    // RightFrontMotor.stop();
-
-      // or without optical
-    // IntakeMotor.spinFor(0.2, seconds);
-    // IntakeMotor.spin(fwd, 12, voltageUnits::volt);
-
       LeftFrontMotor.spin(reverse, 4, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
       RightFrontMotor.spin(fwd, 4, voltageUnits::volt);//- turnMotorPower
       LeftBackMotor.spin(reverse, 4, voltageUnits::volt);//+ turnMotorPower
@@ -627,6 +527,8 @@ void autonomous(void) {
       IntakeMotor.stop();
 
   }
+
+  // basic autonomous code for rollers - other color than auton 1
   else if (autonSelected == 2) {
     // Brain.Screen.print("Auton 2");
       LeftFrontMotor.spin(reverse, 4, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
@@ -648,8 +550,6 @@ void autonomous(void) {
   }
   else if (autonSelected == 4) {
     Brain.Screen.print("SKILLS");
-
-    // autonomous
 
     // rotate before expansion
     turnPID(45, 1);
@@ -793,78 +693,6 @@ void usercontrol(void) {
     // L2/R2 - turret (down arrow = manual override for turret + LED shows state)
 
     // other code HERE
-
-    // auton testing
-    // if (Controller1.ButtonDown.pressing()) {
-      // LeftFrontMotor.startRotateFor(reverse, 1000, rotationUnits::deg);
-      // LeftBackMotor.startRotateFor(reverse, 1000, rotationUnits::deg);
-      // RightFrontMotor.startRotateFor(fwd, 1000, rotationUnits::deg);
-      // RightBackMotor.rotateFor(fwd, 1000, rotationUnits::deg);
-
-      // // or without optical
-      // IntakeMotor.spinFor(0.2, seconds);
-
-      // // drive forward a bit
-      // drivePID(100);
-
-      // // turn (right 45 when 0 is facing forward)
-      // turnPID(45, 1);
-
-      // // drive 1/4 or so of that field
-      // drivePID(2000);
-
-      // // turn to align with high goal (90 to the left if parallel with auton divider lines and perpendicular with high goal)
-      // turnPID(90, 1);
-
-      // // shoot preloads
-      // // spin flywheel
-      // FlywheelMotor.spin(reverse, 12, voltageUnits::volt);
-      // FlywheelMotor2.spin(fwd, 12, voltageUnits::volt);
-
-      // // wait to spin it up a little
-      // wait(1, sec);
-
-      // // shoot
-      // Pneumatics.off();
-      // wait(0.1, sec);
-      // Pneumatics.off();
-      // IntakeMotor.spinFor(2, seconds);
-      // turnPID(45, 1);
-
-      // move to middle of field
-      // drivePID(700);
-
-
-      // wait for expansion
-      // wait(52, sec);
-
-      // expansion
-      // ExpansionPneumatics.off();
-
-      // drive back to a corner
-      // drivePID(-600);
-
-      // drivePID(-75);
-      // IntakeMotor.spinFor(2, seconds);
-
-      // yees
-      // LeftFrontMotor.spin(reverse, 4, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
-      // RightFrontMotor.spin(fwd, 4, voltageUnits::volt);//- turnMotorPower
-      // LeftBackMotor.spin(reverse, 4, voltageUnits::volt);//+ turnMotorPower
-      // RightBackMotor.spin(reverse, 4, voltageUnits::volt);
-      // IntakeMotor.spin(fwd, 8, voltageUnits::volt);
-
-      // wait(0.25, sec);
-
-      // LeftFrontMotor.stop();
-      // LeftBackMotor.stop();
-      // RightBackMotor.stop();
-      // RightFrontMotor.stop();
-      // IntakeMotor.stop();
-      //   or without optical
-      // IntakeMotor.spinFor(0.2, seconds);
-      // IntakeMotor.spinFor(2, seconds);
-    // }
 
     wait(20, msec); // Sleep the task for a short amount of time to prevent wasted resources
   }
