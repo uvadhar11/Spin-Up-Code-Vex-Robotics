@@ -25,12 +25,13 @@
 // Optical              optical       10              
 // ExpansionPneumatics  led           C               
 // LeftFrontMotor       motor         1               
-// LeftBackMotor        motor         2               
-// RightFrontMotor      motor         3               
-// RightBackMotor       motor         4               
-// IntakeMotor          motor         5               
-// FlywheelMotor        motor         6               
-// FlywheelMotor2       motor         7               
+// LeftMiddleMotor      motor         2               
+// LeftBackMotor        motor         3               
+// RightFrontMotor      motor         4               
+// RightMiddleMotor     motor         5               
+// RightBackMotor       motor         6               
+// FlywheelMotor        motor         7               
+// IntakeMotor          motor         8               
 // Gyro1                inertial      9               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
@@ -249,7 +250,6 @@ void turnPID(int desiredValue, double multiplier){
 /*  function is only called once after the V5 has been powered on and        */
 /*  not every time that the robot is disabled.                               */
 /*---------------------------------------------------------------------------*/
-
 int autonSelected = 0; // can set to a default auton if necessary
 std::string allianceColor = "NONE"; // track alliance color
  
@@ -347,7 +347,6 @@ void initalizeAllianceColorSelector() {
  }
   // return 0;
 };
-
 
 // Auton Screen Selector Function
 void autonScreenSelector () {
@@ -604,11 +603,14 @@ void usercontrol(void) {
     double turnVolts = turnVal * 0.12 * speed;
     double forwardVolts = forwardVal * 0.12 * (1 - (fabs(turnVolts)/12.0) * turnImportance) * speed;
 
-    LeftBackMotor.spin(fwd, forwardVolts + turnVolts - 1, volt);
+    LeftFrontMotor.spin(fwd, forwardVolts + turnVolts - 1, volt);
+    RightFrontMotor.spin(fwd, forwardVolts - turnVolts, volt);
+    LeftMiddleMotor.spin(fwd, forwardVolts + turnVolts, volt);
+    RightMiddleMotor.spin(fwd, forwardVolts - turnVolts, volt);
+    LeftBackMotor.spin(fwd, forwardVolts + turnVolts, volt);
     RightBackMotor.spin(fwd, forwardVolts - turnVolts, volt);
-    LeftFrontMotor.spin(fwd, forwardVolts + turnVolts, volt);
-    RightFrontMotor.spin(reverse, forwardVolts - turnVolts, volt);
 
+    
     // BUTTONS
     
     // INTAKE (L1/R1)
@@ -627,10 +629,10 @@ void usercontrol(void) {
     if (Controller1.ButtonR1.pressing()) {
       // shoot stuff then once its shot back, might wanna reset or something so ye
       FlywheelMotor.spin(reverse, 12, voltageUnits::volt);
-      FlywheelMotor2.spin(fwd, 12, voltageUnits::volt);
+      // FlywheelMotor2.spin(fwd, 12, voltageUnits::volt);
     } else {
       FlywheelMotor.stop();
-      FlywheelMotor2.stop();
+      // FlywheelMotor2.stop();
     }
 
     // if (Controller1.ButtonDown.pressing()) {

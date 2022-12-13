@@ -8,12 +8,13 @@ extern led Pneumatics;
 extern optical Optical;
 extern led ExpansionPneumatics;
 extern motor LeftFrontMotor;
+extern motor LeftMiddleMotor;
 extern motor LeftBackMotor;
 extern motor RightFrontMotor;
+extern motor RightMiddleMotor;
 extern motor RightBackMotor;
-extern motor IntakeMotor;
 extern motor FlywheelMotor;
-extern motor FlywheelMotor2;
+extern motor IntakeMotor;
 extern inertial Gyro1;
 
 /**

@@ -13,12 +13,13 @@ led Pneumatics = led(Brain.ThreeWirePort.H);
 optical Optical = optical(PORT10);
 led ExpansionPneumatics = led(Brain.ThreeWirePort.C);
 motor LeftFrontMotor = motor(PORT1, ratio18_1, false);
-motor LeftBackMotor = motor(PORT2, ratio18_1, false);
-motor RightFrontMotor = motor(PORT3, ratio18_1, false);
-motor RightBackMotor = motor(PORT4, ratio18_1, true);
-motor IntakeMotor = motor(PORT5, ratio18_1, false);
-motor FlywheelMotor = motor(PORT6, ratio18_1, false);
-motor FlywheelMotor2 = motor(PORT7, ratio18_1, false);
+motor LeftMiddleMotor = motor(PORT2, ratio18_1, false);
+motor LeftBackMotor = motor(PORT3, ratio18_1, false);
+motor RightFrontMotor = motor(PORT4, ratio18_1, false);
+motor RightMiddleMotor = motor(PORT5, ratio18_1, false);
+motor RightBackMotor = motor(PORT6, ratio18_1, false);
+motor FlywheelMotor = motor(PORT7, ratio18_1, false);
+motor IntakeMotor = motor(PORT8, ratio18_1, false);
 inertial Gyro1 = inertial(PORT9);
 
 // VEXcode generated functions
