@@ -87,16 +87,20 @@ void drivePID(int desiredValue){
 
   //Reset the motor encoder positions
   LeftFrontMotor.setPosition(0, degrees);
+  LeftMiddleMotor.setPosition(0, degrees);
   LeftBackMotor.setPosition(0, degrees);
   RightFrontMotor.setPosition(0, degrees);
+  RightMiddleMotor.setPosition(0, degrees);
   RightBackMotor.setPosition(0, degrees);
   double targetGyroPosition = Gyro1.yaw(rotationUnits::deg);
   
   while(true) {
     //Get the position of the motors
     int leftFrontMotorPosition = LeftFrontMotor.position(degrees);
+    int leftMiddleMotorPosition = LeftMiddleMotor.position(degrees);
     int leftBackMotorPosition = LeftBackMotor.position(degrees);
     int rightFrontMotorPosition = RightFrontMotor.position(degrees);
+    int rightMiddleMotorPosition = RightMiddleMotor.position(degrees);
     int rightBackMotorPosition = RightBackMotor.position(degrees);
   
     // self-correction variables
@@ -130,7 +134,7 @@ void drivePID(int desiredValue){
     //Lateral Movement PID/Going forward and back
 
     //Get the average of the motors
-    int averagePosition = (leftFrontMotorPosition + leftBackMotorPosition + rightFrontMotorPosition + rightBackMotorPosition)/4;
+    int averagePosition = (leftFrontMotorPosition + leftBackMotorPosition + leftMiddleMotorPosition + rightFrontMotorPosition + rightMiddleMotorPosition + rightBackMotorPosition)/6;
     
     //Potential
     error = averagePosition - desiredValue;
@@ -147,6 +151,8 @@ void drivePID(int desiredValue){
     // move the motors
     LeftFrontMotor.spin(reverse, lateralMotorPower + leftValue, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
     RightFrontMotor.spin(fwd, lateralMotorPower + rightValue, voltageUnits::volt);//- turnMotorPower
+    LeftMiddleMotor.spin(reverse, lateralMotorPower + leftValue, voltageUnits::volt);//+ turnMotorPower
+    RightMiddleMotor.spin(fwd, lateralMotorPower + rightValue, voltageUnits::volt);//- turnMotorPower
     LeftBackMotor.spin(reverse, lateralMotorPower + leftValue, voltageUnits::volt);//+ turnMotorPower
     RightBackMotor.spin(reverse, lateralMotorPower + rightValue, voltageUnits::volt);//- turnMotorPower
     
@@ -161,8 +167,10 @@ void drivePID(int desiredValue){
 
   //stop the wheels after the while loop is done
   LeftFrontMotor.stop();
-  LeftBackMotor.stop();
   RightFrontMotor.stop();
+  LeftMiddleMotor.stop();
+  RightMiddleMotor.stop();
+  LeftBackMotor.stop();
   RightBackMotor.stop();
 }
 
@@ -184,8 +192,10 @@ void turnPID(int desiredValue, double multiplier){
   
   //Reset the positions
   LeftFrontMotor.setPosition(0, degrees);
+  LeftMiddleMotor.setPosition(0, degrees); 
   LeftBackMotor.setPosition(0, degrees);
   RightFrontMotor.setPosition(0, degrees);
+  RightMiddleMotor.setPosition(0, degrees);
   RightBackMotor.setPosition(0, degrees);
 
   while(true) {
@@ -215,7 +225,9 @@ void turnPID(int desiredValue, double multiplier){
   
     // Spin the motors
     LeftFrontMotor.spin(reverse, lateralMotorPower*multiplier, voltageUnits::volt);//+ turnMotorPower
-    RightFrontMotor.spin(fwd, (lateralMotorPower * -1)*multiplier, voltageUnits::volt);//- turnMotorPower
+    RightFrontMotor.spin(reverse, (lateralMotorPower * -1)*multiplier, voltageUnits::volt);//- turnMotorPower
+    LeftMiddleMotor.spin(reverse, lateralMotorPower*multiplier, voltageUnits::volt);//+ turnMotorPower
+    RightMiddleMotor.spin(reverse, (lateralMotorPower * -1)*multiplier, voltageUnits::volt);//- turnMotorPower
     LeftBackMotor.spin(reverse, lateralMotorPower*multiplier, voltageUnits::volt);//+ turnMotorPower
     RightBackMotor.spin(reverse, (lateralMotorPower * -1)*multiplier, voltageUnits::volt);//- turnMotorPower
     prevError = error;
@@ -235,8 +247,10 @@ void turnPID(int desiredValue, double multiplier){
 
   //stop the wheels after the while loop is done
   LeftFrontMotor.stop();
-  LeftBackMotor.stop();
   RightFrontMotor.stop();
+  LeftMiddleMotor.stop();
+  RightMiddleMotor.stop();
+  LeftBackMotor.stop();
   RightBackMotor.stop();
 }
 
@@ -511,38 +525,38 @@ void autonomous(void) {
 
   // basic autonomous code for rollers (one color) - check what color
   if (autonSelected == 1) {
-      LeftFrontMotor.spin(reverse, 4, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
-      RightFrontMotor.spin(fwd, 4, voltageUnits::volt);//- turnMotorPower
-      LeftBackMotor.spin(reverse, 4, voltageUnits::volt);//+ turnMotorPower
-      RightBackMotor.spin(reverse, 4, voltageUnits::volt);
-      IntakeMotor.spin(fwd, 8, voltageUnits::volt);
+      // LeftFrontMotor.spin(reverse, 4, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
+      // RightFrontMotor.spin(fwd, 4, voltageUnits::volt);//- turnMotorPower
+      // LeftBackMotor.spin(reverse, 4, voltageUnits::volt);//+ turnMotorPower
+      // RightBackMotor.spin(reverse, 4, voltageUnits::volt);
+      // IntakeMotor.spin(fwd, 8, voltageUnits::volt);
 
-      wait(0.25, sec);
+      // wait(0.25, sec);
 
-      LeftFrontMotor.stop();
-      LeftBackMotor.stop();
-      RightBackMotor.stop();
-      RightFrontMotor.stop();
-      IntakeMotor.stop();
+      // LeftFrontMotor.stop();
+      // LeftBackMotor.stop();
+      // RightBackMotor.stop();
+      // RightFrontMotor.stop();
+      // IntakeMotor.stop();
 
   }
 
   // basic autonomous code for rollers - other color than auton 1
   else if (autonSelected == 2) {
     // Brain.Screen.print("Auton 2");
-      LeftFrontMotor.spin(reverse, 4, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
-      RightFrontMotor.spin(fwd, 4, voltageUnits::volt);//- turnMotorPower
-      LeftBackMotor.spin(reverse, 4, voltageUnits::volt);//+ turnMotorPower
-      RightBackMotor.spin(reverse, 4, voltageUnits::volt);
-      IntakeMotor.spin(reverse, 8, voltageUnits::volt);
+      // LeftFrontMotor.spin(reverse, 4, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
+      // RightFrontMotor.spin(fwd, 4, voltageUnits::volt);//- turnMotorPower
+      // LeftBackMotor.spin(reverse, 4, voltageUnits::volt);//+ turnMotorPower
+      // RightBackMotor.spin(reverse, 4, voltageUnits::volt);
+      // IntakeMotor.spin(reverse, 8, voltageUnits::volt);
 
-      wait(0.25, sec);
+      // wait(0.25, sec);
 
-      LeftFrontMotor.stop();
-      LeftBackMotor.stop();
-      RightBackMotor.stop();
-      RightFrontMotor.stop();
-      IntakeMotor.stop();
+      // LeftFrontMotor.stop();
+      // LeftBackMotor.stop();
+      // RightBackMotor.stop();
+      // RightFrontMotor.stop();
+      // IntakeMotor.stop();
   } 
   else if (autonSelected == 3) {
     Brain.Screen.print("Auton 3");
