@@ -617,7 +617,8 @@ void usercontrol(void) {
     double turnVolts = turnVal * 0.12 * speed;
     double forwardVolts = forwardVal * 0.12 * (1 - (fabs(turnVolts)/12.0) * turnImportance) * speed;
 
-    LeftFrontMotor.spin(fwd, forwardVolts + turnVolts - 1, volt);
+    // original had left with + and right with -
+    LeftFrontMotor.spin(fwd, forwardVolts + turnVolts, volt);
     RightFrontMotor.spin(fwd, forwardVolts - turnVolts, volt);
     LeftMiddleMotor.spin(fwd, forwardVolts + turnVolts, volt);
     RightMiddleMotor.spin(fwd, forwardVolts - turnVolts, volt);
