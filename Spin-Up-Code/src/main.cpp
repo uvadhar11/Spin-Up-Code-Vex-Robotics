@@ -614,16 +614,23 @@ void usercontrol(void) {
     // DRIVETRAIN CODE
     double turnVal = Controller1.Axis1.position();
     double forwardVal = Controller1.Axis3.position();
-    double turnVolts = turnVal * 0.12 * speed;
-    double forwardVolts = forwardVal * 0.12 * (1 - (fabs(turnVolts)/12.0) * turnImportance) * speed;
+    double turnVolts = (turnVal * 0.12 * speed)*-1; // multiplying the -1 so it goes the other way since it was inverted.
+    double forwardVolts = (forwardVal * 0.12 * (1 - (fabs(turnVolts)/12.0) * turnImportance) * speed)*-1;
 
-    // original had left with + and right with -
-    LeftFrontMotor.spin(fwd, forwardVolts + turnVolts, volt);
-    RightFrontMotor.spin(fwd, forwardVolts - turnVolts, volt);
-    LeftMiddleMotor.spin(fwd, forwardVolts + turnVolts, volt);
-    RightMiddleMotor.spin(fwd, forwardVolts - turnVolts, volt);
-    LeftBackMotor.spin(fwd, forwardVolts + turnVolts, volt);
-    RightBackMotor.spin(fwd, forwardVolts - turnVolts, volt);
+    // LeftFrontMotor.spin(fwd, forwardVolts + turnVolts, volt);
+    // RightFrontMotor.spin(fwd, forwardVolts - turnVolts, volt);
+    // LeftMiddleMotor.spin(fwd, forwardVolts + turnVolts, volt);
+    // RightMiddleMotor.spin(fwd, forwardVolts - turnVolts, volt);
+    // LeftBackMotor.spin(fwd, forwardVolts + turnVolts, volt);
+    // RightBackMotor.spin(fwd, forwardVolts - turnVolts, volt);
+
+    // switched from above lines since forward stick did turns and vice versa.
+    LeftFrontMotor.spin(fwd, turnVolts + forwardVolts, volt);
+    RightFrontMotor.spin(fwd, turnVolts - forwardVolts, volt);
+    LeftMiddleMotor.spin(fwd, turnVolts + forwardVolts, volt);
+    RightMiddleMotor.spin(fwd, turnVolts - forwardVolts, volt);
+    LeftBackMotor.spin(fwd, turnVolts + forwardVolts, volt);
+    RightBackMotor.spin(fwd, turnVolts - forwardVolts, volt);
 
     
     // BUTTONS
@@ -710,6 +717,12 @@ void usercontrol(void) {
     // L2/R2 - turret (down arrow = manual override for turret + LED shows state)
 
     // other code HERE
+    
+    // test printing to terminal
+    std::cout << Brain.Timer.value() << " , " 
+    << FlywheelMotor.velocity(rpm) << " , " <<  FlywheelMotor.torque(Nm) << " , " 
+    << FlywheelMotor.current() << " , " << FlywheelMotor.voltage(volt)
+    << std::endl; 
 
     wait(20, msec); // Sleep the task for a short amount of time to prevent wasted resources
   }
