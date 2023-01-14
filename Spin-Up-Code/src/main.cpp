@@ -62,6 +62,7 @@ int selfCorrect = 3;
 int stopPID = 30;
 int ticks = 15000; // for faster turn speed. So doesn't break everything else if turn doesn't work.
 int flywheelPower = 12; // to manage flywheel speed
+bool flyjustUpdated = false;
 
 
 /*------------------------------------------------------------------------*/
@@ -639,7 +640,8 @@ void usercontrol(void) {
     if (Controller1.ButtonL1.pressing()) {
       IntakeMotor.spin(fwd, 12, volt);
       // RollerMotor.spin(fwd, 12, volt);
-    } else if (Controller1.ButtonL2.pressing()) {
+    } else if (Controller1.ButtonR2.pressing()) 
+    { // indexer
       IntakeMotor.spin(reverse, 12, volt);
       // RollerMotor.spin(reverse, 12, volt);
     } else {
@@ -650,7 +652,7 @@ void usercontrol(void) {
     // SHOOTING - B
     if (Controller1.ButtonR1.pressing()) {
       // shoot stuff then once its shot back, might wanna reset or something so ye
-      FlywheelMotor.spin(reverse, 12, voltageUnits::volt);
+      FlywheelMotor.spin(reverse, flywheelPower, voltageUnits::volt);
       // FlywheelMotor2.spin(fwd, 12, voltageUnits::volt);
     } else {
       FlywheelMotor.stop();
@@ -661,13 +663,6 @@ void usercontrol(void) {
     //   if (flywheelPower == 8) flywheelPower = 12;
     //   if (flywheelPower == 12) flywheelPower = 8;
     // }
-
-    if (Controller1.ButtonR2.pressing()) {
-      Pneumatics.off();
-      wait(0.25, sec); // 0.1 for speed
-    } else {
-      Pneumatics.on();
-    }
 
     // Left arrow - expansion
     // if (Controller1.ButtonLeft.pressing()) {
@@ -710,6 +705,7 @@ void usercontrol(void) {
     // if (Controller1.ButtonY.pressing()) {
       // pnemuatic parking break if we have something like that (like makes robot off ground maybe or something.
     // }
+    // expansion
     if (Controller1.ButtonY.pressing()) {
       ExpansionPneumatics.off();
     }
@@ -719,10 +715,29 @@ void usercontrol(void) {
     // other code HERE
     
     // test printing to terminal
-    std::cout << Brain.Timer.value() << " , " 
-    << FlywheelMotor.velocity(rpm) << " , " <<  FlywheelMotor.torque(Nm) << " , " 
-    << FlywheelMotor.current() << " , " << FlywheelMotor.voltage(volt)
-    << std::endl; 
+    // std::cout << Brain.Timer.value() << " , " 
+    // << FlywheelMotor.velocity(rpm) << " , " <<  FlywheelMotor.torque(Nm) << " , " 
+    // << FlywheelMotor.current() << " , " << FlywheelMotor.voltage(volt)
+    // << std::endl; 
+
+    // manage printing flywheel power to brain
+    Controller1.Screen.clearScreen();
+    Controller1.Screen.setCursor(1,1);
+    Controller1.Screen.print("Battery: ");
+    Controller1.Screen.setCursor(1, 10);
+    // Controller1.Screen.print(Brain.Battery.capacity()); // gets the percentage left of the battery
+
+    // // rollers
+    // Controller1.Screen.setCursor(2,1);
+    // Controller1.Screen.print("Rollers: ");
+    // Controller1.Screen.setCursor(2,10);
+    // Controller1.Screen.print("A");
+
+    // flywheel
+    Controller1.Screen.setCursor(3,1);
+    Controller1.Screen.print("Flywheel: ");
+    Controller1.Screen.setCursor(3,11);
+    Controller1.Screen.print(flywheelPower);
 
     wait(20, msec); // Sleep the task for a short amount of time to prevent wasted resources
   }
