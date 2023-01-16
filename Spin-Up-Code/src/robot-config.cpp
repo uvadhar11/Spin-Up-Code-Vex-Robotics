@@ -9,9 +9,9 @@ brain  Brain;
 
 // VEXcode device constructors
 controller Controller1 = controller(primary);
-led Pneumatics = led(Brain.ThreeWirePort.H);
+led Exp2 = led(Brain.ThreeWirePort.B);
 optical Optical = optical(PORT10);
-led ExpansionPneumatics = led(Brain.ThreeWirePort.C);
+led Exp1 = led(Brain.ThreeWirePort.A);
 motor LeftFrontMotor = motor(PORT1, ratio6_1, false);
 motor LeftMiddleMotor = motor(PORT2, ratio6_1, false);
 motor LeftBackMotor = motor(PORT3, ratio6_1, false);

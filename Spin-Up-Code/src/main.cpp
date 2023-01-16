@@ -21,9 +21,9 @@
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
 // Controller1          controller                    
-// Pneumatics           led           H               
+// Exp2                 led           B               
 // Optical              optical       10              
-// ExpansionPneumatics  led           C               
+// Exp1                 led           A               
 // LeftFrontMotor       motor         1               
 // LeftMiddleMotor      motor         2               
 // LeftBackMotor        motor         3               
@@ -61,7 +61,7 @@ competition Competition;
 int selfCorrect = 3;
 int stopPID = 30;
 int ticks = 15000; // for faster turn speed. So doesn't break everything else if turn doesn't work.
-int flywheelPower = 12; // to manage flywheel speed
+int flywheelPower = 9; // to manage flywheel speed
 bool flyjustUpdated = false;
 
 
@@ -150,12 +150,12 @@ void drivePID(int desiredValue){
     double lateralMotorPower = (error * kP) + derivative + (totalError * kI);//* kD
     
     // move the motors
-    LeftFrontMotor.spin(reverse, lateralMotorPower + leftValue, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
+    LeftFrontMotor.spin(fwd, lateralMotorPower + leftValue, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
     RightFrontMotor.spin(fwd, lateralMotorPower + rightValue, voltageUnits::volt);//- turnMotorPower
-    LeftMiddleMotor.spin(reverse, lateralMotorPower + leftValue, voltageUnits::volt);//+ turnMotorPower
+    LeftMiddleMotor.spin(fwd, lateralMotorPower + leftValue, voltageUnits::volt);//+ turnMotorPower
     RightMiddleMotor.spin(fwd, lateralMotorPower + rightValue, voltageUnits::volt);//- turnMotorPower
-    LeftBackMotor.spin(reverse, lateralMotorPower + leftValue, voltageUnits::volt);//+ turnMotorPower
-    RightBackMotor.spin(reverse, lateralMotorPower + rightValue, voltageUnits::volt);//- turnMotorPower
+    LeftBackMotor.spin(fwd, lateralMotorPower + leftValue, voltageUnits::volt);//+ turnMotorPower
+    RightBackMotor.spin(fwd, lateralMotorPower + rightValue, voltageUnits::volt);//- turnMotorPower
     
     prevError = error;
   
@@ -493,6 +493,8 @@ void autonScreenSelector () {
    }
 }
 
+// roller spinning function
+
 
 void pre_auton(void) {
   // All activities that occur before the competition starts
@@ -524,43 +526,154 @@ void autonomous(void) {
   // Insert autonomous user code here.
   // ..........................................................................
 
-  // basic autonomous code for rollers (one color) - check what color
+  // basic autonomous code for rollers SIDE STARTING ON ROLLER
   if (autonSelected == 1) {
-      // LeftFrontMotor.spin(reverse, 4, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
-      // RightFrontMotor.spin(fwd, 4, voltageUnits::volt);//- turnMotorPower
-      // LeftBackMotor.spin(reverse, 4, voltageUnits::volt);//+ turnMotorPower
-      // RightBackMotor.spin(reverse, 4, voltageUnits::volt);
-      // IntakeMotor.spin(fwd, 8, voltageUnits::volt);
+    // LeftFrontMotor.spin(reverse, 4, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
+    // RightFrontMotor.spin(fwd, 4, voltageUnits::volt);//- turnMotorPower
+    // LeftBackMotor.spin(reverse, 4, voltageUnits::volt);//+ turnMotorPower
+    // RightBackMotor.spin(reverse, 4, voltageUnits::volt);
+    // IntakeMotor.spin(fwd, 8, voltageUnits::volt);
 
-      // wait(0.25, sec);
+    // wait(0.25, sec);
 
-      // LeftFrontMotor.stop();
-      // LeftBackMotor.stop();
-      // RightBackMotor.stop();
-      // RightFrontMotor.stop();
-      // IntakeMotor.stop();
+    // LeftFrontMotor.stop();
+    // LeftBackMotor.stop();
+    // RightBackMotor.stop();
+    // RightFrontMotor.stop();
+    // IntakeMotor.stop();
 
+    // move back
+    // LeftFrontMotor.spin(reverse, 12, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
+    // RightFrontMotor.spin(reverse, 12, voltageUnits::volt);//- turnMotorPower
+    // LeftMiddleMotor.spin(reverse, 12, voltageUnits::volt);
+    // RightMiddleMotor.spin(reverse, 12, voltageUnits::volt);
+    // LeftBackMotor.spin(reverse, 12, voltageUnits::volt);//+ turnMotorPower
+    // RightBackMotor.spin(reverse, 12, voltageUnits::volt);
+
+    // trying to do it with degrees
+    LeftFrontMotor.spinFor(fwd, 500, rotationUnits::deg);//+ turnMotorPower (if turning). L/R for self-correction
+    RightFrontMotor.spinFor(reverse, 500, rotationUnits::deg);//- turnMotorPower
+    LeftMiddleMotor.spinFor(fwd, 500, rotationUnits::deg);
+    RightMiddleMotor.spinFor(reverse, 500, rotationUnits::deg);
+    LeftBackMotor.spinFor(fwd, 500, rotationUnits::deg);//+ turnMotorPower
+    RightBackMotor.spinFor(reverse, 500, rotationUnits::deg);
+
+    // wait(0.1, sec);
+
+    // LeftFrontMotor.stop();
+    // RightFrontMotor.stop();
+    // LeftMiddleMotor.stop();
+    // RightMiddleMotor.stop();
+    // LeftBackMotor.stop();
+    // RightBackMotor.stop();
+
+
+    // spin rollers
+    // while (!(Optical.color() == vex::color::red)) {
+    //   IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+    // }
+    if (allianceColor == "RED") {
+      while ((Optical.color() == vex::color::blue)) {
+        IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+      }
+    }
+    else if (allianceColor == "BLUE") {
+      while ((Optical.color() == vex::color::red)) {
+        IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+      }
+    }
   }
 
   // basic autonomous code for rollers - other color than auton 1
-  else if (autonSelected == 2) {
+  else if (autonSelected == 2) { // SIDE WITH NO ROLLER STARTING
     // Brain.Screen.print("Auton 2");
-      // LeftFrontMotor.spin(reverse, 4, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
-      // RightFrontMotor.spin(fwd, 4, voltageUnits::volt);//- turnMotorPower
-      // LeftBackMotor.spin(reverse, 4, voltageUnits::volt);//+ turnMotorPower
-      // RightBackMotor.spin(reverse, 4, voltageUnits::volt);
-      // IntakeMotor.spin(reverse, 8, voltageUnits::volt);
+    // move back
+    // LeftFrontMotor.spin(reverse, 12, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
+    // RightFrontMotor.spin(reverse, 12, voltageUnits::volt);//- turnMotorPower
+    // LeftMiddleMotor.spin(reverse, 12, voltageUnits::volt);
+    // RightMiddleMotor.spin(reverse, 12, voltageUnits::volt);
+    // LeftBackMotor.spin(reverse, 12, voltageUnits::volt);//+ turnMotorPower
+    // RightBackMotor.spin(reverse, 12, voltageUnits::volt);
+    // // IntakeMotor.spin(reverse, 8, voltageUnits::volt);
 
-      // wait(0.25, sec);
+    // wait(0.1, sec);
 
-      // LeftFrontMotor.stop();
-      // LeftBackMotor.stop();
-      // RightBackMotor.stop();
-      // RightFrontMotor.stop();
-      // IntakeMotor.stop();
+    // LeftFrontMotor.stop();
+    // RightFrontMotor.stop();
+    // LeftMiddleMotor.stop();
+    // RightMiddleMotor.stop();
+    // LeftBackMotor.stop();
+    // RightBackMotor.stop();
+  
+    // IntakeMotor.stop();
+
+    // if (allianceColor == "RED") {
+    //     while (!(Optical.color() == vex::color::blue)) {
+    //       IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+    //     }
+    //   }
+    // else if (allianceColor == "BLUE") {
+    //   while (!(Optical.color() == vex::color::red)) {
+    //     IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+    //   }
+    // }
+    // 
+    // while (!(Optical.color() == vex::color::blue)) {
+    //   IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+    // }
+
+    // AUTON
+
+    // drive forward
+    drivePID(300);
+
+    // turn 90 degrees to rollers
+    turnPID(90, 1);
+
+    // spin the rollers
+    if (allianceColor == "RED") {
+      while ((Optical.color() == vex::color::blue)) {
+        IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+      }
+    }
+    else if (allianceColor == "BLUE") {
+      while ((Optical.color() == vex::color::red)) {
+        IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+      }
+    }
+
+    // other stuff
+
   } 
   else if (autonSelected == 3) {
-    Brain.Screen.print("Auton 3");
+    // Brain.Screen.print("Auton 3");
+    Brain.Screen.print("hi");
+    // LeftFrontMotor.spinFor(reverse, 3000, rotationUnits::deg);//+ turnMotorPower (if turning). L/R for self-correction
+    // RightFrontMotor.spinFor(reverse, 3000, rotationUnits::deg);//- turnMotorPower
+    // LeftMiddleMotor.spinFor(reverse, 3000, rotationUnits::deg);
+    // RightMiddleMotor.spinFor(reverse, 3000, rotationUnits::deg);
+    // LeftBackMotor.spinFor(reverse, 3000, rotationUnits::deg);//+ turnMotorPower
+    // RightBackMotor.spinFor(reverse, 3000, rotationUnits::deg);
+
+    // LeftFrontMotor.spin(reverse, 12, volt);
+    // RightFrontMotor.spin(fwd, 12, volt);
+    // LeftMiddleMotor.spin(reverse, 12, volt);
+    // RightMiddleMotor.spin(fwd, 12, volt);
+    // LeftBackMotor.spin(reverse, 12, volt);
+    // RightBackMotor.spin(fwd, 12, volt);
+
+    // wait(0.2, sec);
+
+    // LeftFrontMotor.stop();
+    // RightFrontMotor.stop();
+    // LeftMiddleMotor.stop();
+    // RightMiddleMotor.stop();
+    // LeftBackMotor.stop();
+    // RightBackMotor.stop();
+
+    FlywheelMotor.spin(reverse, 12, volt);
+    wait(2, sec);
+    IntakeMotor.spin(reverse, 9, volt);
   }
   else if (autonSelected == 4) {
     Brain.Screen.print("SKILLS");
@@ -572,14 +685,16 @@ void autonomous(void) {
     // drivePID(3000);
 
 
-    // wait for expansion
-    wait(50, sec);
+    // // wait for expansion
+    // wait(50, sec);
 
-    // expansion
-    ExpansionPneumatics.off();
+    // // expansion
+    // Exp1.off();
+    // wait(1, sec);
+    // Exp2.off();
 
-    // drive back to a corner
-    drivePID(-3000);
+    // // drive back to a corner
+    // drivePID(-3000);
   }
 }
 
@@ -595,7 +710,7 @@ void autonomous(void) {
 
 void usercontrol(void) {
   // User control code here, inside the loop
-  int autoRollers = true;
+  // int autoRollers = true;
 
   while (true) {
     // This is the main execution loop for the user control program.
@@ -679,27 +794,27 @@ void usercontrol(void) {
 
     // AUTO-ROLLERS - Button X
     if (Controller1.ButtonX.pressing()) {
-      if (autoRollers) {
+      // if (autoRollers) {
         if (allianceColor == "RED") {
-          while (!(Optical.color() == vex::color::blue)) {
+          while ((Optical.color() == vex::color::blue)) {
             IntakeMotor.spin(fwd, 12, voltageUnits::volt);
           }
         }
         else if (allianceColor == "BLUE") {
-          while (!(Optical.color() == vex::color::red)) {
+          while ((Optical.color() == vex::color::red)) {
             IntakeMotor.spin(fwd, 12, voltageUnits::volt);
           }
         }
-      }
-      else if (autoRollers == false) {
-        IntakeMotor.spin(fwd, 12, voltageUnits::volt);
-      }
+      // }
+      // else if (autoRollers == false) {
+      //   IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+      // }
     }
 
     // Disable auto-rollers - Button Right (might replace with button up if do turret)
-    if (Controller1.ButtonRight.pressing()) {
-      autoRollers = !autoRollers;
-    } 
+    // if (Controller1.ButtonRight.pressing()) {
+    //   autoRollers = !autoRollers;
+    // } 
 
     // Y - parking brake if we have one
     // if (Controller1.ButtonY.pressing()) {
@@ -707,7 +822,9 @@ void usercontrol(void) {
     // }
     // expansion
     if (Controller1.ButtonY.pressing()) {
-      ExpansionPneumatics.off();
+      Exp1.off();
+      wait(0.1, sec);
+      Exp2.off();
     }
 
     // L2/R2 - turret (down arrow = manual override for turret + LED shows state)
@@ -715,16 +832,32 @@ void usercontrol(void) {
     // other code HERE
     
     // test printing to terminal
-    // std::cout << Brain.Timer.value() << " , " 
-    // << FlywheelMotor.velocity(rpm) << " , " <<  FlywheelMotor.torque(Nm) << " , " 
-    // << FlywheelMotor.current() << " , " << FlywheelMotor.voltage(volt)
-    // << std::endl; 
+    std::cout <<  
+     FlywheelMotor.velocity(rpm) << " , " <<  FlywheelMotor.torque(Nm) << " , " 
+    << FlywheelMotor.current() << " , " << FlywheelMotor.voltage(volt)
+    << std::endl; 
+
+    // update flywheel power
+    if (Controller1.ButtonDown.pressing()) {
+      if (flywheelPower == 12) {
+        flywheelPower = 10;
+      }
+      else if (flywheelPower == 10) {
+        flywheelPower = 9;
+      }
+      else if (flywheelPower == 9) {
+        flywheelPower = 7;
+      }
+      else if (flywheelPower == 7) {
+        flywheelPower = 12;
+      }
+    }
 
     // manage printing flywheel power to brain
-    Controller1.Screen.clearScreen();
-    Controller1.Screen.setCursor(1,1);
-    Controller1.Screen.print("Battery: ");
-    Controller1.Screen.setCursor(1, 10);
+    // Controller1.Screen.clearScreen();
+    // Controller1.Screen.setCursor(1,1);
+    // Controller1.Screen.print("Battery: ");
+    // Controller1.Screen.setCursor(1, 10);
     // Controller1.Screen.print(Brain.Battery.capacity()); // gets the percentage left of the battery
 
     // // rollers
@@ -738,6 +871,22 @@ void usercontrol(void) {
     Controller1.Screen.print("Flywheel: ");
     Controller1.Screen.setCursor(3,11);
     Controller1.Screen.print(flywheelPower);
+
+    if (flywheelPower != 12 && flywheelPower!= 10) {
+      Controller1.Screen.setCursor(3, 12);
+      Controller1.Screen.print(" ");
+    }
+
+    // slowmode
+    // if (Controller1.ButtonUp.pressing()) {
+    //   if (speed != 1) {
+    //     speed = 0.5;
+    //   }
+    //   else {
+    //     speed = 1;
+    //   }
+    // }
+
 
     wait(20, msec); // Sleep the task for a short amount of time to prevent wasted resources
   }

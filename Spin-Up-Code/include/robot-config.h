@@ -4,9 +4,9 @@ extern brain Brain;
 
 // VEXcode devices
 extern controller Controller1;
-extern led Pneumatics;
+extern led Exp2;
 extern optical Optical;
-extern led ExpansionPneumatics;
+extern led Exp1;
 extern motor LeftFrontMotor;
 extern motor LeftMiddleMotor;
 extern motor LeftBackMotor;
