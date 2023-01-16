@@ -833,7 +833,7 @@ void usercontrol(void) {
     
     // test printing to terminal
     std::cout <<  
-     FlywheelMotor.velocity(rpm) << " , " <<  FlywheelMotor.torque(Nm) << " , " 
+    FlywheelMotor.velocity(rpm) << " , " <<  FlywheelMotor.torque(Nm) << " , " 
     << FlywheelMotor.current() << " , " << FlywheelMotor.voltage(volt)
     << std::endl; 
 
