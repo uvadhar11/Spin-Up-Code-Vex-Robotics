@@ -15,7 +15,7 @@ extern motor RightMiddleMotor;
 extern motor RightBackMotor;
 extern motor FlywheelMotor;
 extern motor IntakeMotor;
-extern inertial Gyro1;
+extern inertial Inertial;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

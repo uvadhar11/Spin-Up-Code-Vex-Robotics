@@ -20,7 +20,7 @@ motor RightMiddleMotor = motor(PORT5, ratio6_1, false);
 motor RightBackMotor = motor(PORT6, ratio6_1, false);
 motor FlywheelMotor = motor(PORT7, ratio6_1, false);
 motor IntakeMotor = motor(PORT8, ratio18_1, false);
-inertial Gyro1 = inertial(PORT9);
+inertial Inertial = inertial(PORT9);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable

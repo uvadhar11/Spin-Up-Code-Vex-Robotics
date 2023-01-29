@@ -32,7 +32,7 @@
 // RightBackMotor       motor         6               
 // FlywheelMotor        motor         7               
 // IntakeMotor          motor         8               
-// Gyro1                inertial      9               
+// Inertial             inertial      9               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 using namespace vex;
@@ -54,7 +54,7 @@ competition Competition;
 // vex::motor FlywheelMotor = vex::motor(vex::PORT6);
 // vex::motor FlywheelMotor2 = vex::motor(vex::PORT7);
 
-// inertial Gyro1 = inertial(PORT9);
+// inertial Interial = inertial(PORT9);
 
 
 // GLOBAL VARIABLES
@@ -78,7 +78,7 @@ void drivePID(int desiredValue){
   //Settings - variables initializations
   double kP = 0.05;
   double kI = 0.000000000001;
-  // double kD = 0.001;
+  double kD = 0.001;
 
   //Autonomous Settings
   int error = 0;
@@ -93,7 +93,7 @@ void drivePID(int desiredValue){
   RightFrontMotor.setPosition(0, degrees);
   RightMiddleMotor.setPosition(0, degrees);
   RightBackMotor.setPosition(0, degrees);
-  double targetGyroPosition = Gyro1.yaw(rotationUnits::deg);
+  double targetGyroPosition = Inertial.yaw(rotationUnits::deg);
   
   while(true) {
     //Get the position of the motors
@@ -109,10 +109,10 @@ void drivePID(int desiredValue){
     double rightValue;
   
     // for self-correction stuff
-    int GyroPosition = Gyro1.yaw(rotationUnits::deg) - targetGyroPosition;
+    int GyroPosition = Inertial.yaw(rotationUnits::deg) - targetGyroPosition;
   
 
-    if (Gyro1.yaw(rotationUnits::deg) < targetGyroPosition) {
+    if (Inertial.yaw(rotationUnits::deg) < targetGyroPosition) {
 
       rightValue = abs(GyroPosition) * abs(GyroPosition) / selfCorrect;
 
@@ -122,7 +122,7 @@ void drivePID(int desiredValue){
     }
   
 
-    if (Gyro1.yaw(rotationUnits::deg) > targetGyroPosition) {
+    if (Inertial.yaw(rotationUnits::deg) > targetGyroPosition) {
     
       leftValue = abs(GyroPosition) * abs(GyroPosition) / selfCorrect;
   
@@ -143,11 +143,11 @@ void drivePID(int desiredValue){
     //Derivative
     derivative = error - prevError;
     
-    //Integral - keep out for drivetrain
+    //Integral - trying to make sure you don't undershoot. So as time goes on when u don't reach target, it increases speed. Integral wind-up when not reaching target over time so when closer to target it might not slow down all the way, which is the problem
     totalError += error;
 
     // calculate motor power
-    double lateralMotorPower = (error * kP) + derivative + (totalError * kI);//* kD
+    double lateralMotorPower = (error * kP) + (derivative * kD) + (totalError * kI);//* kD
     
     // move the motors
     LeftFrontMotor.spin(fwd, lateralMotorPower + leftValue, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
@@ -209,7 +209,7 @@ void turnPID(int desiredValue, double multiplier){
     //int rightBackMotorPosition = RightBackMotor.position(degrees);
 
     //Get the average of the motors (just using the gyro here but maybe we could try using the motor pos + gyro for more accuracy)
-    int averagePosition = Gyro1.yaw(rotationUnits::deg);
+    int averagePosition = Inertial.yaw(rotationUnits::deg);
 
     //Potential
     error = averagePosition - desiredValue;
@@ -501,7 +501,7 @@ void pre_auton(void) {
   // Example: clearing encoders, setting servo positions, ...
 
   // CALIBRATE the gyro and other sensors and stuff (also add as needed)
-  Gyro1.calibrate();
+  Inertial.calibrate();
 
   // AUTON SCREEN SELECTOR STUFF 
   initalizeAutonSelector(); // set the start rectangle conditions
@@ -823,7 +823,6 @@ void usercontrol(void) {
     // expansion
     if (Controller1.ButtonY.pressing()) {
       Exp1.off();
-      wait(0.1, sec);
       Exp2.off();
     }
 
