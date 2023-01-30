@@ -27,7 +27,7 @@
 // LeftFrontMotor       motor         1               
 // LeftMiddleMotor      motor         2               
 // LeftBackMotor        motor         3               
-// RightFrontMotor      motor         4               
+// RightFrontMotor      motor         12              
 // RightMiddleMotor     motor         5               
 // RightBackMotor       motor         6               
 // FlywheelMotor        motor         7               
@@ -151,11 +151,11 @@ void drivePID(int desiredValue){
     
     // move the motors
     LeftFrontMotor.spin(fwd, lateralMotorPower + leftValue, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
-    RightFrontMotor.spin(fwd, lateralMotorPower + rightValue, voltageUnits::volt);//- turnMotorPower
+    RightFrontMotor.spin(reverse, lateralMotorPower + rightValue, voltageUnits::volt);//- turnMotorPower
     LeftMiddleMotor.spin(fwd, lateralMotorPower + leftValue, voltageUnits::volt);//+ turnMotorPower
-    RightMiddleMotor.spin(fwd, lateralMotorPower + rightValue, voltageUnits::volt);//- turnMotorPower
+    RightMiddleMotor.spin(reverse, lateralMotorPower + rightValue, voltageUnits::volt);//- turnMotorPower
     LeftBackMotor.spin(fwd, lateralMotorPower + leftValue, voltageUnits::volt);//+ turnMotorPower
-    RightBackMotor.spin(fwd, lateralMotorPower + rightValue, voltageUnits::volt);//- turnMotorPower
+    RightBackMotor.spin(reverse, lateralMotorPower + rightValue, voltageUnits::volt);//- turnMotorPower
     
     prevError = error;
   
@@ -679,7 +679,7 @@ void autonomous(void) {
     Brain.Screen.print("SKILLS");
 
     // rotate before expansion
-    turnPID(45, 1);
+    //turnPID(45, 1);
 
     // move to middle of field
     // drivePID(3000);
@@ -695,6 +695,10 @@ void autonomous(void) {
 
     // // drive back to a corner
     // drivePID(-3000);
+
+
+    // testing driving
+    drivePID(600);
   }
 }
 
