@@ -225,12 +225,12 @@ void turnPID(int desiredValue, double multiplier){
     double lateralMotorPower = (error * kP) + derivative + (totalError * kI); //* kD
   
     // Spin the motors
-    LeftFrontMotor.spin(reverse, lateralMotorPower*multiplier, voltageUnits::volt);//+ turnMotorPower
-    RightFrontMotor.spin(reverse, (lateralMotorPower * -1)*multiplier, voltageUnits::volt);//- turnMotorPower
-    LeftMiddleMotor.spin(reverse, lateralMotorPower*multiplier, voltageUnits::volt);//+ turnMotorPower
-    RightMiddleMotor.spin(reverse, (lateralMotorPower * -1)*multiplier, voltageUnits::volt);//- turnMotorPower
-    LeftBackMotor.spin(reverse, lateralMotorPower*multiplier, voltageUnits::volt);//+ turnMotorPower
-    RightBackMotor.spin(reverse, (lateralMotorPower * -1)*multiplier, voltageUnits::volt);//- turnMotorPower
+    LeftFrontMotor.spin(fwd, lateralMotorPower*multiplier, voltageUnits::volt);//+ turnMotorPower
+    RightFrontMotor.spin(fwd, (lateralMotorPower*-1)*multiplier, voltageUnits::volt);//- turnMotorPower
+    LeftMiddleMotor.spin(fwd, lateralMotorPower*multiplier, voltageUnits::volt);//+ turnMotorPower
+    RightMiddleMotor.spin(fwd, (lateralMotorPower*-1)*multiplier, voltageUnits::volt);//- turnMotorPower
+    LeftBackMotor.spin(fwd, lateralMotorPower*multiplier, voltageUnits::volt);//+ turnMotorPower
+    RightBackMotor.spin(fwd, (lateralMotorPower*-1)*multiplier, voltageUnits::volt);//- turnMotorPower
     prevError = error;
   
   
@@ -253,6 +253,57 @@ void turnPID(int desiredValue, double multiplier){
   RightMiddleMotor.stop();
   LeftBackMotor.stop();
   RightBackMotor.stop();
+}
+
+
+// FLYWHEEL PID
+void flywheelPID(){ // using rpm of the flywheel as "distance"
+  int desiredRpm = 430;
+  //Settings - variables initializations
+  double kP = 0.05;
+  double kI = 0.000000000001;
+  double kD = 0.001;
+
+  //Autonomous Settings
+  int error = 0;
+  int prevError = 0;
+  int derivative;
+  int totalError = 0;
+
+  //Reset the motor encoder positions
+  // FlywheelMotor.setPosition(0, degrees); // rotational?
+  
+  while(true) {
+    //Get the position of the motors
+    int flywheelMotorVelocity = FlywheelMotor.velocity(rpm);
+    
+    //Potential -> avg pos - desired rpm
+    error = flywheelMotorVelocity - desiredRpm;
+    
+    //Derivative
+    derivative = error - prevError;
+    
+    //Integral - trying to make sure you don't undershoot. So as time goes on when u don't reach target, it increases speed. Integral wind-up when not reaching target over time so when closer to target it might not slow down all the way, which is the problem
+    totalError += error;
+
+    // calculate motor power
+    double motorPower = (error * kP) + (derivative * kD) + (totalError * kI);//* kD
+    
+    // move the motor
+    FlywheelMotor.spin(fwd, motorPower, voltageUnits::volt);
+    
+    
+    prevError = error;
+  
+  
+    // if (abs(error) < stopPID) {
+    //   Brain.Screen.print(abs(error));
+    //   break;
+    // }
+  }
+
+  //stop the wheels after the while loop is done
+  // FlywheelMotor
 }
 
 
@@ -698,7 +749,8 @@ void autonomous(void) {
 
 
     // testing driving
-    drivePID(600);
+    // drivePID(600);
+    turnPID(90, 1);
   }
 }
 
@@ -890,6 +942,14 @@ void usercontrol(void) {
     //   }
     // }
 
+    if (Controller1.ButtonRight.pressing()) {
+      if (speed == 1) speed = 0.5;
+      else speed = 1;
+    }
+
+    task gammas(flywheelPID());
+
+    flywheelPID(430);
 
     wait(20, msec); // Sleep the task for a short amount of time to prevent wasted resources
   }
