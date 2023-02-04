@@ -308,6 +308,9 @@ int flywheelPID(){ // using rpm of the flywheel as "distance"
   return 0;
 }
 
+// TBH ALGORITHM
+// POST #10 on https://www.chiefdelphi.com/t/paper-take-back-half-shooter-wheel-speed-control/121640/10
+
 // e = S-P;                            // calculate the error;
 // Y += G*e;                           // integrate the output;
 // if (Y>1) Y=1; else if (Y<0) Y=0;    // clamp the output to 0..+1;
@@ -355,6 +358,8 @@ int TBH() {
 
   // spin the flywheel motor
   FlywheelMotor.spin(reverse, output, volt);
+
+  vex::task::sleep(20);
 
   return 0;
 }
@@ -1000,8 +1005,12 @@ void usercontrol(void) {
       else speed = 1;
     }
 
-    vex::task t1(flywheelPID);
+    // vex::task t1(flywheelPID);
     // flywheelPID();
+
+    // run TBH task
+    vex::task flywheelTBH(TBH);
+    // do we need to start the TBH task?
 
     wait(20, msec); // Sleep the task for a short amount of time to prevent wasted resources
   }
