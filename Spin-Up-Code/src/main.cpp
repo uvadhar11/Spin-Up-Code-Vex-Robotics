@@ -22,20 +22,20 @@
 // [Name]               [Type]        [Port(s)]
 // Controller1          controller                    
 // Exp2                 led           B               
-// Optical              optical       10              
+// Optical              optical       19              
 // Exp1                 led           A               
 // LeftFrontMotor       motor         1               
 // LeftMiddleMotor      motor         2               
 // LeftBackMotor        motor         3               
-// RightFrontMotor      motor         12              
+// RightFrontMotor      motor         4               
 // RightMiddleMotor     motor         5               
 // RightBackMotor       motor         6               
 // FlywheelMotor        motor         7               
 // IntakeMotor          motor         8               
-// Inertial             inertial      9               
+// Inertial             inertial      20              
 // LeftEncoder          encoder       C, D            
 // RightEncoder         encoder       E, F            
-// MiddleEncoder        encoder       G, H            
+// LEDG                 led           G               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 using namespace vex;
@@ -85,9 +85,9 @@ double revolutions(double inches) {
 
 void drivePID(int desiredValue){
   //Settings - variables initializations
-  double kP = 0.05;
-  double kI = 0.000000000001;
-  double kD = 0.001;
+  double kP = 1.0;
+  double kI = 0.0; // 0.000000000001
+  double kD = 1.0;
 
   //Autonomous Settings
   int error = 0;
@@ -116,29 +116,32 @@ void drivePID(int desiredValue){
     // self-correction variables
     double leftValue;
     double rightValue;
+
+    leftValue = 0.0;
+    rightValue = 0.0;
   
     // for self-correction stuff
-    int GyroPosition = Inertial.yaw(rotationUnits::deg) - targetGyroPosition;
+    // int GyroPosition = Inertial.yaw(rotationUnits::deg) - targetGyroPosition;
   
 
-    if (Inertial.yaw(rotationUnits::deg) < targetGyroPosition) {
+    // if (Inertial.yaw(rotationUnits::deg) < targetGyroPosition) {
 
-      rightValue = abs(GyroPosition) * abs(GyroPosition) / selfCorrect;
+    //   rightValue = abs(GyroPosition) * abs(GyroPosition) / selfCorrect;
 
-    } else {
+    // } else {
 
-      rightValue = 0;
-    }
+    //   rightValue = 0;
+    // }
   
 
-    if (Inertial.yaw(rotationUnits::deg) > targetGyroPosition) {
+    // if (Inertial.yaw(rotationUnits::deg) > targetGyroPosition) {
     
-      leftValue = abs(GyroPosition) * abs(GyroPosition) / selfCorrect;
+    //   leftValue = abs(GyroPosition) * abs(GyroPosition) / selfCorrect;
   
-    } else {
+    // } else {
   
-      leftValue = 0;
-    }
+    //   leftValue = 0;
+    // }
   
 
     //Lateral Movement PID/Going forward and back
@@ -153,10 +156,32 @@ void drivePID(int desiredValue){
     derivative = error - prevError;
     
     //Integral - trying to make sure you don't undershoot. So as time goes on when u don't reach target, it increases speed. Integral wind-up when not reaching target over time so when closer to target it might not slow down all the way, which is the problem
-    totalError += error;
+    totalError += error; // this is the integral
+
+    // std::cout <<  
+    // error 
+    // << std::endl; 
+
+    std::cout <<  
+    leftFrontMotorPosition << " , " <<  rightFrontMotorPosition << " , " 
+    << leftMiddleMotorPosition << " , " << rightMiddleMotorPosition << " , " << leftBackMotorPosition << " , " << rightBackMotorPosition
+    << std::endl; 
+
+    // other checks like integral we will see if works
+    if (error == 0) totalError = 0;
+
+  
+    if (abs(error) < stopPID) {
+      Brain.Screen.print(abs(error));
+      break;
+    } 
+    else {
+      // means the error is greater than 30
+      totalError = 0; // integral = 0
+    }
 
     // calculate motor power
-    double lateralMotorPower = (error * kP) + (derivative * kD) + (totalError * kI);//* kD
+    double lateralMotorPower = (error * kP) + (derivative * kD) + (totalError * kI);//* kD and (totalError * kI)
     
     // move the motors
     LeftFrontMotor.spin(fwd, lateralMotorPower + leftValue, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
@@ -165,14 +190,11 @@ void drivePID(int desiredValue){
     RightMiddleMotor.spin(reverse, lateralMotorPower + rightValue, voltageUnits::volt);//- turnMotorPower
     LeftBackMotor.spin(fwd, lateralMotorPower + leftValue, voltageUnits::volt);//+ turnMotorPower
     RightBackMotor.spin(reverse, lateralMotorPower + rightValue, voltageUnits::volt);//- turnMotorPower
+
+    // Brain.Screen.print(error + ", " + averagePosition);
     
     prevError = error;
-  
-  
-    if (abs(error) < stopPID) {
-      Brain.Screen.print(abs(error));
-      break;
-    }
+
   }
 
   //stop the wheels after the while loop is done
@@ -389,9 +411,9 @@ int odometry() {
   // }
 
   // store the current encoder values in local variables
-  LeftEncoderPos = LeftEncoder.rotation(rotationUnits::deg);
-  RightEncoderPos = RightEncoder.rotation(rotationUnits::deg);
-  MiddleEncoderPos = MiddleEncoder.rotation(rotationUnits::deg);
+  // LeftEncoderPos = LeftEncoder.rotation(rotationUnits::deg);
+  // RightEncoderPos = RightEncoder.rotation(rotationUnits::deg);
+  // MiddleEncoderPos = MiddleEncoder.rotation(rotationUnits::deg);
 
   // calculate change in encoder's value since last cycle
 
@@ -414,35 +436,35 @@ int odometry() {
 // }
 
 // Function to update the odometry using the encoder readings
-void updateOdometry() {
-  // Measure the change in encoder values
-  float leftEncoderDelta = leftEncoder - (LeftBackMotor.rotation(rotationUnits::deg) + LeftFrontMotor.rotation(rotationUnits::deg) + LeftMiddleMotor.rotation(rotationUnits::deg));
-  float rightEncoderDelta = rightEncoder - (RightBackMotor.rotation(rotationUnits::deg) + RightFrontMotor.rotation(rotationUnits::deg) + RightMiddleMotor.rotation(rotationUnits::deg));
+// void updateOdometry() {
+//   // Measure the change in encoder values
+//   float leftEncoderDelta = leftEncoder - (LeftBackMotor.rotation(rotationUnits::deg) + LeftFrontMotor.rotation(rotationUnits::deg) + LeftMiddleMotor.rotation(rotationUnits::deg));
+//   float rightEncoderDelta = rightEncoder - (RightBackMotor.rotation(rotationUnits::deg) + RightFrontMotor.rotation(rotationUnits::deg) + RightMiddleMotor.rotation(rotationUnits::deg));
   
-  // Update the encoder readings
-  leftEncoder = (LeftBackMotor.rotation(rotationUnits::deg) + LeftFrontMotor.rotation(rotationUnits::deg) + LeftMiddleMotor.rotation(rotationUnits::deg));
-  rightEncoder = (RightBackMotor.rotation(rotationUnits::deg) + RightFrontMotor.rotation(rotationUnits::deg) + RightMiddleMotor.rotation(rotationUnits::deg));
+//   // Update the encoder readings
+//   leftEncoder = (LeftBackMotor.rotation(rotationUnits::deg) + LeftFrontMotor.rotation(rotationUnits::deg) + LeftMiddleMotor.rotation(rotationUnits::deg));
+//   rightEncoder = (RightBackMotor.rotation(rotationUnits::deg) + RightFrontMotor.rotation(rotationUnits::deg) + RightMiddleMotor.rotation(rotationUnits::deg));
   
-  // Calculate the distance traveled by each wheel
-  float leftDistance = leftEncoderDelta / 360 * 2 * 3.14159 * 4.05;
-  float rightDistance = rightEncoderDelta / 360 * 2 * 3.14159 * 4.05;
+//   // Calculate the distance traveled by each wheel
+//   float leftDistance = leftEncoderDelta / 360 * 2 * 3.14159 * 4.05;
+//   float rightDistance = rightEncoderDelta / 360 * 2 * 3.14159 * 4.05;
 
-  // Calculate the average distance traveled
-  float distance = (leftDistance + rightDistance) / 2;
+//   // Calculate the average distance traveled
+//   float distance = (leftDistance + rightDistance) / 2;
 
-  // Calculate the change in heading
-  float headingDelta = (rightDistance - leftDistance) / 9.5;
+//   // Calculate the change in heading
+//   float headingDelta = (rightDistance - leftDistance) / 9.5;
 
-  // Update the heading
-  heading += headingDelta;
+//   // Update the heading
+//   heading += headingDelta;
 
-  // Update the position
-  xPos += distance * cos(heading);
-  yPos += distance * sin(heading);
+//   // Update the position
+//   xPos += distance * cos(heading);
+//   yPos += distance * sin(heading);
 
-  // sleep the task
-  vex::task::sleep(20);
-}
+//   // sleep the task
+//   vex::task::sleep(20);
+// }
 // int main() {
 //   // Reset the odometry
 //   resetOdometry();
@@ -754,12 +776,12 @@ void autonomous(void) {
     // RightBackMotor.spin(reverse, 12, voltageUnits::volt);
 
     // trying to do it with degrees
-    LeftFrontMotor.spinFor(fwd, 500, rotationUnits::deg);//+ turnMotorPower (if turning). L/R for self-correction
-    RightFrontMotor.spinFor(reverse, 500, rotationUnits::deg);//- turnMotorPower
-    LeftMiddleMotor.spinFor(fwd, 500, rotationUnits::deg);
-    RightMiddleMotor.spinFor(reverse, 500, rotationUnits::deg);
-    LeftBackMotor.spinFor(fwd, 500, rotationUnits::deg);//+ turnMotorPower
-    RightBackMotor.spinFor(reverse, 500, rotationUnits::deg);
+    // LeftFrontMotor.spinFor(fwd, 500, rotationUnits::deg);//+ turnMotorPower (if turning). L/R for self-correction
+    // RightFrontMotor.spinFor(reverse, 500, rotationUnits::deg);//- turnMotorPower
+    // LeftMiddleMotor.spinFor(fwd, 500, rotationUnits::deg);
+    // RightMiddleMotor.spinFor(reverse, 500, rotationUnits::deg);
+    // LeftBackMotor.spinFor(fwd, 500, rotationUnits::deg);//+ turnMotorPower
+    // RightBackMotor.spinFor(reverse, 500, rotationUnits::deg);
 
     // wait(0.1, sec);
 
@@ -775,16 +797,57 @@ void autonomous(void) {
     // while (!(Optical.color() == vex::color::red)) {
     //   IntakeMotor.spin(fwd, 12, voltageUnits::volt);
     // }
+
+    // TEST
     if (allianceColor == "RED") {
       while ((Optical.color() == vex::color::blue)) {
-        IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+        IntakeMotor.spin(fwd, 12, volt);
+        LeftFrontMotor.spin(fwd, 12, volt);
+        RightFrontMotor.spin(reverse, 12, volt);
+        LeftMiddleMotor.spin(fwd, 12, volt);
+        RightMiddleMotor.spin(reverse, 12, volt);
+        LeftBackMotor.spin(fwd, 12, volt);
+        RightBackMotor.spin(reverse, 12, volt);
       }
     }
     else if (allianceColor == "BLUE") {
       while ((Optical.color() == vex::color::red)) {
         IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+        LeftFrontMotor.spin(fwd, 12, volt);
+        RightFrontMotor.spin(reverse, 12, volt);
+        LeftMiddleMotor.spin(fwd, 12, volt);
+        RightMiddleMotor.spin(reverse, 12, volt);
+        LeftBackMotor.spin(fwd, 12, volt);
+        RightBackMotor.spin(reverse, 12, volt);
       }
     }
+
+    // CODE RN
+
+    // move back
+    // LeftFrontMotor.spin(fwd, 12, volt);
+    // RightFrontMotor.spin(reverse, 12, volt);
+    // LeftMiddleMotor.spin(fwd, 12, volt);
+    // RightMiddleMotor.spin(reverse, 12, volt);
+    // LeftBackMotor.spin(fwd, 12, volt);
+    // RightBackMotor.spin(reverse, 12, volt);
+
+    // // spin rollers
+    // IntakeMotor.spin(fwd, 12, volt);
+    // wait(0.2, sec);
+    // IntakeMotor.stop();
+
+
+    // LeftFrontMotor.rotateFor(fwd, 200, deg);
+    // RightFrontMotor.rotateFor(reverse, 200, deg);
+    // LeftMiddleMotor.rotateFor(fwd, 200, deg);
+    // RightMiddleMotor.rotateFor(reverse, 200, deg);
+    // LeftBackMotor.rotateFor(fwd, 200, deg);
+    // RightBackMotor.rotateFor(reverse, 200, deg);
+
+    // IntakeMotor.spin(fwd, 12, volt);
+    // wait(0.2, sec);
+    // IntakeMotor.stop();
   }
 
   // basic autonomous code for rollers - other color than auton 1
@@ -874,9 +937,12 @@ void autonomous(void) {
     // LeftBackMotor.stop();
     // RightBackMotor.stop();
 
-    FlywheelMotor.spin(reverse, 12, volt);
-    wait(2, sec);
-    IntakeMotor.spin(reverse, 9, volt);
+    // rip auton shoots in opponent's high goal, can spool fly up less, wait less, etc. but not really reliable unless under
+    // FlywheelMotor.spin(reverse, 12, volt);
+    // wait(2, sec);
+    // IntakeMotor.spin(reverse, 9, volt);
+
+    drivePID(200);
   }
   else if (autonSelected == 4) {
     Brain.Screen.print("SKILLS");
@@ -902,7 +968,45 @@ void autonomous(void) {
 
     // testing driving
     // drivePID(600);
-    turnPID(90, 1);
+    // turnPID(-90, 1);
+
+
+    // expansion skills
+
+    // rollers
+
+    // turn and move
+
+    // drive forward a little bit
+    // drivePID(60);
+
+    // expand
+    // Exp1.off();
+    // Exp2.off();
+
+    // drive back a little bit
+    // drivePID(-25);
+
+    // SKILLS
+    LeftFrontMotor.spin(reverse, 12, volt);
+    RightFrontMotor.spin(fwd, 12, volt);
+    LeftMiddleMotor.spin(reverse, 12, volt);
+    RightMiddleMotor.spin(fwd, 12, volt);
+    LeftBackMotor.spin(reverse, 12, volt);
+    RightBackMotor.spin(fwd, 12, volt);
+
+    wait(0.2, sec);
+
+    LeftFrontMotor.stop();
+    RightFrontMotor.stop();
+    LeftMiddleMotor.stop();
+    RightMiddleMotor.stop();
+    LeftBackMotor.stop();
+    RightBackMotor.stop();
+
+    Exp1.off();
+    Exp2.off();
+
   }
 }
 
@@ -919,6 +1023,9 @@ void autonomous(void) {
 void usercontrol(void) {
   // User control code here, inside the loop
   // int autoRollers = true;
+  // VARIABLES
+    double turnImportance = 1; // for changing the turn speed faster I think
+    double speed = 1; // changing speed
 
   while (true) {
     // This is the main execution loop for the user control program.
@@ -929,11 +1036,6 @@ void usercontrol(void) {
     // Insert user code here. This is where you use the joystick values to
     // update your motors, etc.
     // ........................................................................
-
-    
-    // VARIABLES
-    double turnImportance = 1; // for changing the turn speed faster I think
-    double speed = 1; // changing speed
   
     // DRIVETRAIN CODE
     double turnVal = Controller1.Axis1.position();
@@ -949,12 +1051,12 @@ void usercontrol(void) {
     // RightBackMotor.spin(fwd, forwardVolts - turnVolts, volt);
 
     // switched from above lines since forward stick did turns and vice versa.
-    LeftFrontMotor.spin(fwd, turnVolts + forwardVolts, volt);
-    RightFrontMotor.spin(fwd, turnVolts - forwardVolts, volt);
-    LeftMiddleMotor.spin(fwd, turnVolts + forwardVolts, volt);
-    RightMiddleMotor.spin(fwd, turnVolts - forwardVolts, volt);
-    LeftBackMotor.spin(fwd, turnVolts + forwardVolts, volt);
-    RightBackMotor.spin(fwd, turnVolts - forwardVolts, volt);
+    LeftFrontMotor.spin(fwd, forwardVolts + turnVolts, volt);
+    RightFrontMotor.spin(fwd, forwardVolts - turnVolts, volt);
+    LeftMiddleMotor.spin(fwd, forwardVolts + turnVolts, volt);
+    RightMiddleMotor.spin(fwd, forwardVolts - turnVolts, volt);
+    LeftBackMotor.spin(fwd, forwardVolts + turnVolts, volt);
+    RightBackMotor.spin(fwd, forwardVolts - turnVolts, volt);
 
     
     // BUTTONS
@@ -1001,23 +1103,48 @@ void usercontrol(void) {
     // }
 
     // AUTO-ROLLERS - Button X
+    // allianceColor = "BLUE";
+    // allianceColor = "RED";
     if (Controller1.ButtonX.pressing()) {
+      if (allianceColor == "RED") {
+         while ((Optical.color() == vex::color::blue)) {
+           IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+         }
+       }
+       else if (allianceColor == "BLUE") {
+         while ((Optical.color() == vex::color::red)) {
+           IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+         }
+       }
+    }
       // if (autoRollers) {
-        if (allianceColor == "RED") {
-          while ((Optical.color() == vex::color::blue)) {
-            IntakeMotor.spin(fwd, 12, voltageUnits::volt);
-          }
-        }
-        else if (allianceColor == "BLUE") {
-          while ((Optical.color() == vex::color::red)) {
-            IntakeMotor.spin(fwd, 12, voltageUnits::volt);
-          }
-        }
+        // allianceColor = "RED";
+        // if (allianceColor == "RED") { // red allianceColor == "RED"
+        //   while ((Optical.color() == vex::color::blue)) {
+        //     IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+        //   }
+        // }
+        // else if (allianceColor == "BLUE") { // blue
+        //   while ((Optical.color() == vex::color::red)) {
+        //     IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+        //   }
+        // }
+
+        // testing auton // red allianceColor == "RED"
+          // while ((Optical.color() == vex::color::blue)) {
+          //   IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+          // }
+          // while (Optical.color() == vex::color::red) {
+          //   IntakeMotor.spin(fwd, 12, volt);
+          // }
+        
+        // Brain.Screen.print(Optical.color());
+
       // }
       // else if (autoRollers == false) {
       //   IntakeMotor.spin(fwd, 12, voltageUnits::volt);
       // }
-    }
+    // }
 
     // Disable auto-rollers - Button Right (might replace with button up if do turret)
     // if (Controller1.ButtonRight.pressing()) {
@@ -1039,10 +1166,10 @@ void usercontrol(void) {
     // other code HERE
     
     // test printing to terminal
-    std::cout <<  
-    FlywheelMotor.velocity(rpm) << " , " <<  FlywheelMotor.torque(Nm) << " , " 
-    << FlywheelMotor.current() << " , " << FlywheelMotor.voltage(volt)
-    << std::endl; 
+    // std::cout <<  
+    // FlywheelMotor.velocity(rpm) << " , " <<  FlywheelMotor.torque(Nm) << " , " 
+    // << FlywheelMotor.current() << " , " << FlywheelMotor.voltage(volt)
+    // << std::endl; 
 
     // update flywheel power
     if (Controller1.ButtonDown.pressing()) {
@@ -1079,6 +1206,10 @@ void usercontrol(void) {
     Controller1.Screen.setCursor(3,11);
     Controller1.Screen.print(flywheelPower);
 
+    // flywheel velocity
+    Controller1.Screen.setCursor(3, 14);
+    Controller1.Screen.print(FlywheelMotor.velocity(rpm));
+
     if (flywheelPower != 12 && flywheelPower!= 10) {
       Controller1.Screen.setCursor(3, 12);
       Controller1.Screen.print(" ");
@@ -1103,8 +1234,17 @@ void usercontrol(void) {
     // flywheelPID();
 
     // run TBH task
-    vex::task flywheelTBH(TBH);
+    // vex::task flywheelTBH(TBH);
     // do we need to start the TBH task?
+
+
+    // auto vibrate flywheel when around 220 rpm
+    if (FlywheelMotor.velocity(rpm) >= -220 && FlywheelMotor.velocity(rpm) <= -250) {
+      // Controller1.rumble(rumbleShort);
+      // led on
+      LEDG.on();
+    } 
+    // Controller1.rumble(rumbleShort);
 
     wait(20, msec); // Sleep the task for a short amount of time to prevent wasted resources
   }

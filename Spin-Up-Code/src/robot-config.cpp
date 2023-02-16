@@ -10,20 +10,20 @@ brain  Brain;
 // VEXcode device constructors
 controller Controller1 = controller(primary);
 led Exp2 = led(Brain.ThreeWirePort.B);
-optical Optical = optical(PORT10);
+optical Optical = optical(PORT19);
 led Exp1 = led(Brain.ThreeWirePort.A);
 motor LeftFrontMotor = motor(PORT1, ratio6_1, false);
 motor LeftMiddleMotor = motor(PORT2, ratio6_1, false);
 motor LeftBackMotor = motor(PORT3, ratio6_1, false);
-motor RightFrontMotor = motor(PORT12, ratio6_1, false);
-motor RightMiddleMotor = motor(PORT5, ratio6_1, false);
-motor RightBackMotor = motor(PORT6, ratio6_1, false);
+motor RightFrontMotor = motor(PORT4, ratio6_1, true);
+motor RightMiddleMotor = motor(PORT5, ratio6_1, true);
+motor RightBackMotor = motor(PORT6, ratio6_1, true);
 motor FlywheelMotor = motor(PORT7, ratio6_1, false);
 motor IntakeMotor = motor(PORT8, ratio6_1, false);
-inertial Inertial = inertial(PORT9);
+inertial Inertial = inertial(PORT20);
 encoder LeftEncoder = encoder(Brain.ThreeWirePort.C);
 encoder RightEncoder = encoder(Brain.ThreeWirePort.E);
-encoder MiddleEncoder = encoder(Brain.ThreeWirePort.G);
+led LEDG = led(Brain.ThreeWirePort.G);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable
