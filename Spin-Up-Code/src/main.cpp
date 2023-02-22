@@ -85,9 +85,9 @@ double revolutions(double inches) {
 
 void drivePID(int desiredValue){
   //Settings - variables initializations
-  double kP = 1.0;
+  double kP = 0.2;
   double kI = 0.0; // 0.000000000001
-  double kD = 1.0;
+  double kD = 0.2;
 
   //Autonomous Settings
   int error = 0;
@@ -103,6 +103,9 @@ void drivePID(int desiredValue){
   RightMiddleMotor.setPosition(0, degrees);
   RightBackMotor.setPosition(0, degrees);
   double targetGyroPosition = Inertial.yaw(rotationUnits::deg);
+
+  Brain.Screen.clearScreen();
+
   
   while(true) {
     //Get the position of the motors
@@ -120,6 +123,9 @@ void drivePID(int desiredValue){
     leftValue = 0.0;
     rightValue = 0.0;
   
+    // printing values to brain
+
+
     // for self-correction stuff
     // int GyroPosition = Inertial.yaw(rotationUnits::deg) - targetGyroPosition;
   
@@ -147,7 +153,7 @@ void drivePID(int desiredValue){
     //Lateral Movement PID/Going forward and back
 
     //Get the average of the motors
-    int averagePosition = (leftFrontMotorPosition + leftBackMotorPosition + leftMiddleMotorPosition + rightFrontMotorPosition + rightMiddleMotorPosition + rightBackMotorPosition)/6;
+    int averagePosition = abs((leftFrontMotorPosition + leftBackMotorPosition + leftMiddleMotorPosition + rightFrontMotorPosition + rightMiddleMotorPosition + rightBackMotorPosition)/6);
     
     //Potential
     error = averagePosition - desiredValue;
@@ -162,9 +168,32 @@ void drivePID(int desiredValue){
     // error 
     // << std::endl; 
 
+    // printing values
+    // error
+    Brain.Screen.setCursor(1, 2);
+    Brain.Screen.print(error);
+    // average positions
+    Brain.Screen.setCursor(2, 2);
+    Brain.Screen.print(LeftFrontMotor.position(deg));
+
+    Brain.Screen.setCursor(3, 2);
+    Brain.Screen.print(LeftMiddleMotor.position(deg));
+
+    Brain.Screen.setCursor(4, 2);
+    Brain.Screen.print(LeftBackMotor.position(deg));
+
+    Brain.Screen.setCursor(5, 2);
+    Brain.Screen.print(RightFrontMotor.position(deg));
+
+    Brain.Screen.setCursor(6, 2);
+    Brain.Screen.print(RightMiddleMotor.position(deg));
+
+    Brain.Screen.setCursor(7, 2);
+    Brain.Screen.print(RightBackMotor.position(deg));
+
     std::cout <<  
-    leftFrontMotorPosition << " , " <<  rightFrontMotorPosition << " , " 
-    << leftMiddleMotorPosition << " , " << rightMiddleMotorPosition << " , " << leftBackMotorPosition << " , " << rightBackMotorPosition
+    leftFrontMotorPosition << " , " <<  leftMiddleMotorPosition << " , " 
+    << leftBackMotorPosition << " , " << rightFrontMotorPosition << " , " << rightMiddleMotorPosition << " , " << rightBackMotorPosition
     << std::endl; 
 
     // other checks like integral we will see if works
@@ -183,13 +212,13 @@ void drivePID(int desiredValue){
     // calculate motor power
     double lateralMotorPower = (error * kP) + (derivative * kD) + (totalError * kI);//* kD and (totalError * kI)
     
-    // move the motors
+    // move the motors - R was rev
     LeftFrontMotor.spin(fwd, lateralMotorPower + leftValue, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
-    RightFrontMotor.spin(reverse, lateralMotorPower + rightValue, voltageUnits::volt);//- turnMotorPower
+    RightFrontMotor.spin(fwd, lateralMotorPower + rightValue, voltageUnits::volt);//- turnMotorPower
     LeftMiddleMotor.spin(fwd, lateralMotorPower + leftValue, voltageUnits::volt);//+ turnMotorPower
-    RightMiddleMotor.spin(reverse, lateralMotorPower + rightValue, voltageUnits::volt);//- turnMotorPower
+    RightMiddleMotor.spin(fwd, lateralMotorPower + rightValue, voltageUnits::volt);//- turnMotorPower
     LeftBackMotor.spin(fwd, lateralMotorPower + leftValue, voltageUnits::volt);//+ turnMotorPower
-    RightBackMotor.spin(reverse, lateralMotorPower + rightValue, voltageUnits::volt);//- turnMotorPower
+    RightBackMotor.spin(fwd, lateralMotorPower + rightValue, voltageUnits::volt);//- turnMotorPower
 
     // Brain.Screen.print(error + ", " + averagePosition);
     
