@@ -79,7 +79,7 @@ bool flyjustUpdated = false;
 /*                                                                        */
 /*------------------------------------------------------------------------*/
 double revolutions(double inches) {
-  return inches * (3/7) * M_PI * 4.05; // inches * motor ticks * gear ratio * pi * wheel inches
+  return inches * (3/7) * M_PI * 4.15; // inches * motor ticks * gear ratio * pi * wheel inches
   // inches * 300 * (3/7) * M_PI * 4.05;
 }
 
@@ -200,7 +200,7 @@ void drivePID(int desiredValue){
     if (error == 0) totalError = 0;
 
   
-    if (abs(error) < stopPID) {
+    if (abs(error) < 1) {
       Brain.Screen.print(abs(error));
       break;
     } 
@@ -972,6 +972,9 @@ void autonomous(void) {
     // IntakeMotor.spin(reverse, 9, volt);
 
     drivePID(200);
+
+    Brain.Screen.clearScreen();
+    Brain.Screen.print("Hello");
   }
   else if (autonSelected == 4) {
     Brain.Screen.print("SKILLS");
@@ -1069,8 +1072,8 @@ void usercontrol(void) {
     // DRIVETRAIN CODE
     double turnVal = Controller1.Axis1.position();
     double forwardVal = Controller1.Axis3.position();
-    double turnVolts = (turnVal * 0.12 * speed)*-1; // multiplying the -1 so it goes the other way since it was inverted.
-    double forwardVolts = (forwardVal * 0.12 * (1 - (fabs(turnVolts)/12.0) * turnImportance) * speed)*-1;
+    double turnVolts = (turnVal * 0.12 * speed); // multiplying the -1 so it goes the other way since it was inverted.
+    double forwardVolts = (forwardVal * 0.12 * (1 - (fabs(turnVolts)/12.0) * turnImportance) * speed);
 
     // LeftFrontMotor.spin(fwd, forwardVolts + turnVolts, volt);
     // RightFrontMotor.spin(fwd, forwardVolts - turnVolts, volt);
