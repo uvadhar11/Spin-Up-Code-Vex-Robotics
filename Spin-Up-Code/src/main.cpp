@@ -153,10 +153,10 @@ void drivePID(int desiredValue){
     //Lateral Movement PID/Going forward and back
 
     //Get the average of the motors
-    int averagePosition = abs((leftFrontMotorPosition + leftBackMotorPosition + leftMiddleMotorPosition + rightFrontMotorPosition + rightMiddleMotorPosition + rightBackMotorPosition)/6);
+    int averagePosition = ((leftFrontMotorPosition + leftBackMotorPosition + leftMiddleMotorPosition + rightFrontMotorPosition + rightMiddleMotorPosition + rightBackMotorPosition)/6);
     
     //Potential
-    error = averagePosition - desiredValue;
+    error = desiredValue - averagePosition;
     
     //Derivative
     derivative = error - prevError;
