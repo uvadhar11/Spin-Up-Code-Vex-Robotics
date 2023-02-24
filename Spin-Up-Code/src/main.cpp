@@ -85,9 +85,9 @@ double revolutions(double inches) {
 
 void drivePID(int desiredValue){
   //Settings - variables initializations
-  double kP = 0.2;
+  double kP = 0.11; // 0.11
   double kI = 0.0; // 0.000000000001
-  double kD = 0.2;
+  double kD = 0.009; // 0.009
 
   //Autonomous Settings
   int error = 0;
@@ -191,10 +191,14 @@ void drivePID(int desiredValue){
     Brain.Screen.setCursor(7, 2);
     Brain.Screen.print(RightBackMotor.position(deg));
 
-    std::cout <<  
-    leftFrontMotorPosition << " , " <<  leftMiddleMotorPosition << " , " 
-    << leftBackMotorPosition << " , " << rightFrontMotorPosition << " , " << rightMiddleMotorPosition << " , " << rightBackMotorPosition
-    << std::endl; 
+    // motor encoder positions
+    // std::cout <<  
+    // leftFrontMotorPosition << " , " <<  leftMiddleMotorPosition << " , " 
+    // << leftBackMotorPosition << " , " << rightFrontMotorPosition << " , " << rightMiddleMotorPosition << " , " << rightBackMotorPosition
+    // << std::endl; 
+
+    // error
+    std::cout << error << std::endl;
 
     // other checks like integral
     if (error == 0) totalError = 0;
@@ -784,10 +788,11 @@ void pre_auton(void) {
   Inertial.calibrate();
 
   // AUTON SCREEN SELECTOR STUFF 
-  initalizeAutonSelector(); // set the start rectangle conditions
-  initalizeAllianceColorSelector(); // set the start alliance color selection conditions
+  // initalizeAutonSelector(); // set the start rectangle conditions
+  // initalizeAllianceColorSelector(); // set the start alliance color selection conditions
 
-  Brain.Screen.pressed(autonScreenSelector);
+  // Brain.Screen.pressed(autonScreenSelector);
+  autonSelected = 3;
 }
 
 
@@ -997,8 +1002,8 @@ void autonomous(void) {
     // wait(2, sec);
     // IntakeMotor.spin(reverse, 9, volt);
 
-    // drivePID(200);
-    turnPID(90, 1);
+    drivePID(200);
+    // turnPID(90, 1);
 
     Brain.Screen.clearScreen();
     Brain.Screen.print("Hello");
