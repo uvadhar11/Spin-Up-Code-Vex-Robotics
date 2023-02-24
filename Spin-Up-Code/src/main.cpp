@@ -196,7 +196,7 @@ void drivePID(int desiredValue){
     << leftBackMotorPosition << " , " << rightFrontMotorPosition << " , " << rightMiddleMotorPosition << " , " << rightBackMotorPosition
     << std::endl; 
 
-    // other checks like integral we will see if works
+    // other checks like integral
     if (error == 0) totalError = 0;
 
   
@@ -205,7 +205,7 @@ void drivePID(int desiredValue){
       break;
     } 
     else {
-      // means the error is greater than 30
+      // means the error is greater than stop PID or the value set there.
       totalError = 0; // integral = 0
     }
 
@@ -240,14 +240,14 @@ void drivePID(int desiredValue){
 void turnPID(int desiredValue, double multiplier){
   //Settings - variables initializations
   double kP = 0.2;
-  double kI = 0.000000000001;
-  // double kD = 0.001;
+  double kI = 0.000000000000; // last digit was 1
+  double kD = 0.0001;
  
   //Autonomous Settings
-  int error = 0;
-  int prevError = 0;
+  double error = 0;
+  double prevError = 0;
   int derivative;
-  int totalError = 0;
+  double totalError = 0;
 
   int turnTime = 0; // to keep track of the current turn time (ticks I think). To check if > 15000 or not.
   
@@ -269,7 +269,10 @@ void turnPID(int desiredValue, double multiplier){
     //int rightBackMotorPosition = RightBackMotor.position(degrees);
 
     //Get the average of the motors (just using the gyro here but maybe we could try using the motor pos + gyro for more accuracy)
-    int averagePosition = Inertial.yaw(rotationUnits::deg);
+    double averagePosition = Inertial.yaw(rotationUnits::deg);
+
+    Brain.Screen.setCursor(2, 2);
+    Brain.Screen.print(Inertial.angle());
 
     //Potential
     error = averagePosition - desiredValue;
@@ -280,30 +283,53 @@ void turnPID(int desiredValue, double multiplier){
     //Integral - keep out for drivetrain
     totalError += error;
 
-    //calculate the actual PID (take out the last part (kI) fo drivetrain cuz it makes small changes that messes it up)
-    //If you were to have integral: add "+ totalError * kI" at the end then the semicolon
-    double lateralMotorPower = (error * kP) + derivative + (totalError * kI); //* kD
+    // other checks like integral
+    if (error == 0) totalError = 0;
+
   
-    // Spin the motors
-    LeftFrontMotor.spin(fwd, lateralMotorPower*multiplier, voltageUnits::volt);//+ turnMotorPower
-    RightFrontMotor.spin(fwd, (lateralMotorPower*-1)*multiplier, voltageUnits::volt);//- turnMotorPower
-    LeftMiddleMotor.spin(fwd, lateralMotorPower*multiplier, voltageUnits::volt);//+ turnMotorPower
-    RightMiddleMotor.spin(fwd, (lateralMotorPower*-1)*multiplier, voltageUnits::volt);//- turnMotorPower
-    LeftBackMotor.spin(fwd, lateralMotorPower*multiplier, voltageUnits::volt);//+ turnMotorPower
-    RightBackMotor.spin(fwd, (lateralMotorPower*-1)*multiplier, voltageUnits::volt);//- turnMotorPower
-    prevError = error;
-  
-  
-    if (abs(error) <= 1) {
-  
+    if (fabs(error) < 0.1) {
+      Brain.Screen.print(fabs(error));
       break;
+    } 
+    else {
+      // means the error is greater than stop PID or the value set there.
+      totalError = 0; // integral = 0
     }
-  
-    turnTime = turnTime + 1; // update current turn time.
-  
+
+    // turn time breaking
     if (turnTime > ticks) {
       break;
     }
+
+    // printing the error
+    Brain.Screen.setCursor(4, 2);
+    Brain.Screen.print(error);
+
+    //calculate the actual PID (take out the last part (kI) fo drivetrain cuz it makes small changes that messes it up)
+    //If you were to have integral: add "+ totalError * kI" at the end then the semicolon
+    double lateralMotorPower = (error * kP) + (derivative * kD) + (totalError * kI); //* kD
+  
+    // Spin the motors
+    LeftFrontMotor.spin(reverse, lateralMotorPower*multiplier, voltageUnits::volt);//+ turnMotorPower
+    RightFrontMotor.spin(fwd, (lateralMotorPower)*multiplier, voltageUnits::volt);//- turnMotorPower
+    LeftMiddleMotor.spin(reverse, lateralMotorPower*multiplier, voltageUnits::volt);//+ turnMotorPower
+    RightMiddleMotor.spin(fwd, (lateralMotorPower)*multiplier, voltageUnits::volt);//- turnMotorPower
+    LeftBackMotor.spin(reverse, lateralMotorPower*multiplier, voltageUnits::volt);//+ turnMotorPower
+    RightBackMotor.spin(fwd, (lateralMotorPower)*multiplier, voltageUnits::volt);//- turnMotorPower
+  
+  
+    // if (abs(error) < 0.1) {
+  
+    //   break;
+    // }
+  
+    turnTime = turnTime + 1; // update current turn time.
+  
+    // if (turnTime > ticks) {
+    //   break;
+    // }
+
+    prevError = error;
   }
 
   //stop the wheels after the while loop is done
@@ -971,7 +997,8 @@ void autonomous(void) {
     // wait(2, sec);
     // IntakeMotor.spin(reverse, 9, volt);
 
-    drivePID(200);
+    // drivePID(200);
+    turnPID(90, 1);
 
     Brain.Screen.clearScreen();
     Brain.Screen.print("Hello");
