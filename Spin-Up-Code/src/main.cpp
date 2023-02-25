@@ -84,7 +84,7 @@ double revolutions(double inches) {
   // inches * 300 * (3/7) * M_PI * 4.05;
 }
 
-void drivePID(int desiredValue){
+void drivePID(int desiredValue, double multiplier){
   //Settings - variables initializations
   double kP = 0.115; // 0.11
   double kI = 0.000000001; // 0.000000000001     2
@@ -205,7 +205,7 @@ void drivePID(int desiredValue){
     if (error == 0) totalError = 0;
 
   
-    if (abs(error) <= 1) {
+    if (abs(error) <= 15) {
       Brain.Screen.print(abs(error));
       break;
     } 
@@ -215,7 +215,7 @@ void drivePID(int desiredValue){
     }
 
     // calculate motor power
-    double lateralMotorPower = (error * kP) + (derivative * kD) + (totalError * kI);//* kD and (totalError * kI)
+    double lateralMotorPower = ((error * kP) + (derivative * kD) + (totalError * kI)) * multiplier;//* kD and (totalError * kI)
     
     // move the motors - R was rev
     LeftFrontMotor.spin(fwd, lateralMotorPower + leftValue, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
@@ -224,6 +224,166 @@ void drivePID(int desiredValue){
     RightMiddleMotor.spin(fwd, lateralMotorPower + rightValue, voltageUnits::volt);//- turnMotorPower
     LeftBackMotor.spin(fwd, lateralMotorPower + leftValue, voltageUnits::volt);//+ turnMotorPower
     RightBackMotor.spin(fwd, lateralMotorPower + rightValue, voltageUnits::volt);//- turnMotorPower
+
+    // Brain.Screen.print(error + ", " + averagePosition);
+    
+    prevError = error;
+
+  }
+
+  //stop the wheels after the while loop is done
+  LeftFrontMotor.stop();
+  RightFrontMotor.stop();
+  LeftMiddleMotor.stop();
+  RightMiddleMotor.stop();
+  LeftBackMotor.stop();
+  RightBackMotor.stop();
+}
+
+void drivePID(int desiredValue, double multiplier, bool intakeWhile){
+  //Settings - variables initializations
+  double kP = 0.115; // 0.11
+  double kI = 0.000000001; // 0.000000000001     2
+  double kD = 0.0312; // 0.009 -> clean 0.02
+
+  //Autonomous Settings
+  int error = 0;
+  int prevError = 0;
+  int derivative;
+  int totalError = 0;
+
+  //Reset the motor encoder positions
+  LeftFrontMotor.setPosition(0, degrees);
+  LeftMiddleMotor.setPosition(0, degrees);
+  LeftBackMotor.setPosition(0, degrees);
+  RightFrontMotor.setPosition(0, degrees);
+  RightMiddleMotor.setPosition(0, degrees);
+  RightBackMotor.setPosition(0, degrees);
+  double targetGyroPosition = Inertial.yaw(rotationUnits::deg);
+
+  Brain.Screen.clearScreen();
+
+  
+  while(true) {
+    //Get the position of the motors
+    int leftFrontMotorPosition = LeftFrontMotor.position(degrees);
+    int leftMiddleMotorPosition = LeftMiddleMotor.position(degrees);
+    int leftBackMotorPosition = LeftBackMotor.position(degrees);
+    int rightFrontMotorPosition = RightFrontMotor.position(degrees);
+    int rightMiddleMotorPosition = RightMiddleMotor.position(degrees);
+    int rightBackMotorPosition = RightBackMotor.position(degrees);
+  
+    // self-correction variables
+    double leftValue;
+    double rightValue;
+
+    leftValue = 0.0;
+    rightValue = 0.0;
+  
+    // printing values to brain
+
+
+    // for self-correction stuff
+    // int GyroPosition = Inertial.yaw(rotationUnits::deg) - targetGyroPosition;
+  
+
+    // if (Inertial.yaw(rotationUnits::deg) < targetGyroPosition) {
+
+    //   rightValue = abs(GyroPosition) * abs(GyroPosition) / selfCorrect;
+
+    // } else {
+
+    //   rightValue = 0;
+    // }
+  
+
+    // if (Inertial.yaw(rotationUnits::deg) > targetGyroPosition) {
+    
+    //   leftValue = abs(GyroPosition) * abs(GyroPosition) / selfCorrect;
+  
+    // } else {
+  
+    //   leftValue = 0;
+    // }
+  
+
+    //Lateral Movement PID/Going forward and back
+
+    //Get the average of the motors
+    int averagePosition = ((leftFrontMotorPosition + leftBackMotorPosition + leftMiddleMotorPosition + rightFrontMotorPosition + rightMiddleMotorPosition + rightBackMotorPosition)/6);
+    
+    //Potential
+    error = desiredValue - averagePosition;
+    
+    //Derivative
+    derivative = error - prevError;
+    
+    //Integral - trying to make sure you don't undershoot. So as time goes on when u don't reach target, it increases speed. Integral wind-up when not reaching target over time so when closer to target it might not slow down all the way, which is the problem
+    totalError += error; // this is the integral
+
+    // std::cout <<  
+    // error 
+    // << std::endl; 
+
+    // printing values
+    // error
+    Brain.Screen.setCursor(1, 2);
+    Brain.Screen.print(error);
+    // average positions
+    Brain.Screen.setCursor(2, 2);
+    Brain.Screen.print(LeftFrontMotor.position(deg));
+
+    Brain.Screen.setCursor(3, 2);
+    Brain.Screen.print(LeftMiddleMotor.position(deg));
+
+    Brain.Screen.setCursor(4, 2);
+    Brain.Screen.print(LeftBackMotor.position(deg));
+
+    Brain.Screen.setCursor(5, 2);
+    Brain.Screen.print(RightFrontMotor.position(deg));
+
+    Brain.Screen.setCursor(6, 2);
+    Brain.Screen.print(RightMiddleMotor.position(deg));
+
+    Brain.Screen.setCursor(7, 2);
+    Brain.Screen.print(RightBackMotor.position(deg));
+
+    // motor encoder positions
+    // std::cout <<  
+    // leftFrontMotorPosition << " , " <<  leftMiddleMotorPosition << " , " 
+    // << leftBackMotorPosition << " , " << rightFrontMotorPosition << " , " << rightMiddleMotorPosition << " , " << rightBackMotorPosition
+    // << std::endl; 
+
+    // error
+    std::cout << error << std::endl;
+
+    // other checks like integral
+    if (error == 0) totalError = 0;
+
+  
+    if (abs(error) <= 15) {
+      Brain.Screen.print(abs(error));
+      break;
+    } 
+    else {
+      // means the error is greater than stop PID or the value set there.
+      totalError = 0; // integral = 0
+    }
+
+    // calculate motor power
+    double lateralMotorPower = ((error * kP) + (derivative * kD) + (totalError * kI)) * multiplier;//* kD and (totalError * kI)
+    
+    // move the motors - R was rev
+    LeftFrontMotor.spin(fwd, lateralMotorPower + leftValue, voltageUnits::volt);//+ turnMotorPower (if turning). L/R for self-correction
+    RightFrontMotor.spin(fwd, lateralMotorPower + rightValue, voltageUnits::volt);//- turnMotorPower
+    LeftMiddleMotor.spin(fwd, lateralMotorPower + leftValue, voltageUnits::volt);//+ turnMotorPower
+    RightMiddleMotor.spin(fwd, lateralMotorPower + rightValue, voltageUnits::volt);//- turnMotorPower
+    LeftBackMotor.spin(fwd, lateralMotorPower + leftValue, voltageUnits::volt);//+ turnMotorPower
+    RightBackMotor.spin(fwd, lateralMotorPower + rightValue, voltageUnits::volt);//- turnMotorPower
+
+    if (intakeWhile) {
+      IntakeMotor.spin(fwd, 12, volt);
+    }
 
     // Brain.Screen.print(error + ", " + averagePosition);
     
@@ -789,11 +949,11 @@ void pre_auton(void) {
   Inertial.calibrate();
 
   // AUTON SCREEN SELECTOR STUFF 
-  initalizeAutonSelector(); // set the start rectangle conditions
-  initalizeAllianceColorSelector(); // set the start alliance color selection conditions
+  // initalizeAutonSelector(); // set the start rectangle conditions
+  // initalizeAllianceColorSelector(); // set the start alliance color selection conditions
 
-  Brain.Screen.pressed(autonScreenSelector);
-  // autonSelected = 3;
+  // Brain.Screen.pressed(autonScreenSelector);
+  autonSelected = 3;
 }
 
 
@@ -952,7 +1112,7 @@ void autonomous(void) {
     // AUTON
 
     // drive forward
-    drivePID(300);
+    drivePID(300, 1);
 
     // turn 90 degrees to rollers
     turnPID(90, 1);
@@ -1035,39 +1195,92 @@ void autonomous(void) {
     FlywheelMotor.stop();
 
     // move forward away from rollers a bit
-    drivePID(100);
+    drivePID(100, 1);
 
     // turn in line with the white line
     turnPID(45, 1);
 
     // drive fwd
-    drivePID(322);
+    drivePID(650, 1);
 
     // shoot discs
-    turnPID(-90, 1);
+    turnPID(-7, 1);
 
     // spin flywheel motor
     FlywheelMotor.spin(reverse, 12, volt);
 
-    // once hits 270 ish then spin
-    while (FlywheelMotor.velocity(rpm) < 270) {
+    Brain.Screen.clearScreen();
+
+    // // once hits 270 ish then spin
+    while (FlywheelMotor.velocity(rpm) > -289) {
       // piston
-      Piston.on();
+      // Piston.on();
+      Brain.Screen.setCursor(5, 2);
+      Brain.Screen.print(FlywheelMotor.velocity(rpm));
     }
 
-    // firing 2 discs
-    wait(0.1, sec);
-    Piston.off();
-    Piston.on();
-    wait(0.1, sec);
-    Piston.off();
+    IntakeMotor.spin(reverse, 12, volt);
 
-    // turn intake facing 3 stack
-    turnPID(-15, 1); // 315
+    wait(3, sec);
+    IntakeMotor.stop();
+    FlywheelMotor.stop();
 
-    // forward and intake
+    // // firing 2 discs
+    // wait(0.1, sec);
+    // Piston.off();
+    // Piston.on();
+    // wait(0.1, sec);
+    // Piston.off();
+
+    // // turn intake facing 3 stack
+    turnPID(-130, 1); // 315
+
+    // // forward and intake
+    // IntakeMotor.spin(fwd, 12, volt);
+
+    // drivePID(-650, 0.10, true); // attempt for PID + intake - didn't really work
+    // but got one disc but then it stopped since that's what PID does.
+
+
+    LeftFrontMotor.spin(reverse, 2.5, volt);
+    RightFrontMotor.spin(reverse, 2.5, volt);
+    LeftMiddleMotor.spin(reverse, 2.5, volt);
+    RightMiddleMotor.spin(reverse, 2.5, volt);
+    LeftBackMotor.spin(reverse, 2.5, volt);
+    RightBackMotor.spin(reverse, 2.5, volt);
     IntakeMotor.spin(fwd, 12, volt);
-    drivePID(322);
+
+
+
+    wait(4.2, sec);
+
+    // IntakeMotor.spin(reverse, 12, volt);
+    // wait(0.375, sec);
+
+    LeftFrontMotor.stop();
+    RightFrontMotor.stop();
+    LeftMiddleMotor.stop();
+    RightMiddleMotor.stop();
+    LeftBackMotor.stop();
+    RightBackMotor.stop();
+    IntakeMotor.stop();
+
+    turnPID(-20, 1);
+
+    // shoot
+    // // once hits 270 ish then spin
+    while (FlywheelMotor.velocity(rpm) > -289) {
+      // piston
+      // Piston.on();
+      Brain.Screen.setCursor(5, 2);
+      Brain.Screen.print(FlywheelMotor.velocity(rpm));
+    }
+
+    IntakeMotor.spin(reverse, 12, volt);
+
+    wait(4, sec);
+    IntakeMotor.stop();
+    FlywheelMotor.stop();
 
     Brain.Screen.clearScreen();
     Brain.Screen.print("Hello");
