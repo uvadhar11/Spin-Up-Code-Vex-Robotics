@@ -85,9 +85,9 @@ double revolutions(double inches) {
 
 void drivePID(int desiredValue){
   //Settings - variables initializations
-  double kP = 0.11; // 0.11
-  double kI = 0.0; // 0.000000000001
-  double kD = 0.009; // 0.009
+  double kP = 0.115; // 0.11
+  double kI = 0.000000001; // 0.000000000001     2
+  double kD = 0.0312; // 0.009 -> clean 0.02
 
   //Autonomous Settings
   int error = 0;
@@ -204,7 +204,7 @@ void drivePID(int desiredValue){
     if (error == 0) totalError = 0;
 
   
-    if (abs(error) < 1) {
+    if (abs(error) <= 1) {
       Brain.Screen.print(abs(error));
       break;
     } 
