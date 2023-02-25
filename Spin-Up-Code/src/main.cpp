@@ -1002,8 +1002,38 @@ void autonomous(void) {
     // wait(2, sec);
     // IntakeMotor.spin(reverse, 9, volt);
 
-    drivePID(200);
+    // drivePID(200);
     // turnPID(90, 1);
+
+    // MOVE BACK TO ROLLERS
+    LeftFrontMotor.spin(reverse, 12, volt);
+    RightFrontMotor.spin(reverse, 12, volt);
+    LeftMiddleMotor.spin(reverse, 12, volt);
+    RightMiddleMotor.spin(reverse, 12, volt);
+    LeftBackMotor.spin(reverse, 12, volt);
+    RightBackMotor.spin(reverse, 12, volt);
+        FlywheelMotor.spin(fwd, 12, volt);
+
+
+    wait(0.1, sec);
+
+    // IntakeMotor.spin(fwd, 12, volt);
+
+    // wait(0.4, sec);
+
+    IntakeMotor.stop();
+    LeftFrontMotor.stop();
+    RightFrontMotor.stop();
+    LeftMiddleMotor.stop();
+    RightMiddleMotor.stop();
+    LeftBackMotor.stop();
+    RightBackMotor.stop();
+
+    // SPIN ROLLERS
+    IntakeMotor.spin(reverse, 12, volt);
+    wait(0.3, sec);
+    IntakeMotor.stop();
+    FlywheelMotor.stop();
 
     Brain.Screen.clearScreen();
     Brain.Screen.print("Hello");
