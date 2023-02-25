@@ -16,9 +16,8 @@ extern motor RightBackMotor;
 extern motor FlywheelMotor;
 extern motor IntakeMotor;
 extern inertial Inertial;
-extern encoder LeftEncoder;
-extern encoder RightEncoder;
 extern led LEDG;
+extern led Piston;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

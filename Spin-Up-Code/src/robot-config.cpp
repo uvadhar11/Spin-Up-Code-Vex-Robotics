@@ -21,9 +21,8 @@ motor RightBackMotor = motor(PORT6, ratio6_1, false);
 motor FlywheelMotor = motor(PORT7, ratio6_1, false);
 motor IntakeMotor = motor(PORT8, ratio6_1, false);
 inertial Inertial = inertial(PORT20);
-encoder LeftEncoder = encoder(Brain.ThreeWirePort.C);
-encoder RightEncoder = encoder(Brain.ThreeWirePort.E);
 led LEDG = led(Brain.ThreeWirePort.G);
+led Piston = led(Brain.ThreeWirePort.C);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable

@@ -33,9 +33,8 @@
 // FlywheelMotor        motor         7               
 // IntakeMotor          motor         8               
 // Inertial             inertial      20              
-// LeftEncoder          encoder       C, D            
-// RightEncoder         encoder       E, F            
 // LEDG                 led           G               
+// Piston               led           C               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 using namespace vex;
@@ -68,6 +67,8 @@ int stopPID = 30;
 int ticks = 15000; // for faster turn speed. So doesn't break everything else if turn doesn't work.
 int flywheelPower = 9; // to manage flywheel speed
 bool flyjustUpdated = false;
+bool expand = false; // variable for allowing expanding up and down.
+
 
 
 /*------------------------------------------------------------------------*/
@@ -788,11 +789,11 @@ void pre_auton(void) {
   Inertial.calibrate();
 
   // AUTON SCREEN SELECTOR STUFF 
-  // initalizeAutonSelector(); // set the start rectangle conditions
-  // initalizeAllianceColorSelector(); // set the start alliance color selection conditions
+  initalizeAutonSelector(); // set the start rectangle conditions
+  initalizeAllianceColorSelector(); // set the start alliance color selection conditions
 
-  // Brain.Screen.pressed(autonScreenSelector);
-  autonSelected = 3;
+  Brain.Screen.pressed(autonScreenSelector);
+  // autonSelected = 3;
 }
 
 
@@ -1033,7 +1034,40 @@ void autonomous(void) {
     IntakeMotor.stop();
     FlywheelMotor.stop();
 
+    // move forward away from rollers a bit
+    drivePID(100);
 
+    // turn in line with the white line
+    turnPID(45, 1);
+
+    // drive fwd
+    drivePID(322);
+
+    // shoot discs
+    turnPID(-90, 1);
+
+    // spin flywheel motor
+    FlywheelMotor.spin(reverse, 12, volt);
+
+    // once hits 270 ish then spin
+    while (FlywheelMotor.velocity(rpm) < 270) {
+      // piston
+      Piston.on();
+    }
+
+    // firing 2 discs
+    wait(0.1, sec);
+    Piston.off();
+    Piston.on();
+    wait(0.1, sec);
+    Piston.off();
+
+    // turn intake facing 3 stack
+    turnPID(-15, 1); // 315
+
+    // forward and intake
+    IntakeMotor.spin(fwd, 12, volt);
+    drivePID(322);
 
     Brain.Screen.clearScreen();
     Brain.Screen.print("Hello");
@@ -1251,8 +1285,18 @@ void usercontrol(void) {
     // }
     // expansion
     if (Controller1.ButtonY.pressing()) {
-      Exp1.off();
-      Exp2.off();
+      // Exp1.off();
+      // Exp2.off();
+
+      if (expand == false) {
+        Exp1.off();
+        Exp2.off();
+        expand = true;
+      } else {
+        Exp1.on();
+        Exp2.on();
+        expand = false;
+      }
     }
 
     // L2/R2 - turret (down arrow = manual override for turret + LED shows state)
