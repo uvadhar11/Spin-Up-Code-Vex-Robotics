@@ -1212,7 +1212,7 @@ void autonomous(void) {
     Brain.Screen.clearScreen();
 
     // // once hits 270 ish then spin
-    while (FlywheelMotor.velocity(rpm) > -289) {
+    while (FlywheelMotor.velocity(rpm) > -270) {
       // piston
       // Piston.on();
       Brain.Screen.setCursor(5, 2);
@@ -1590,10 +1590,10 @@ void usercontrol(void) {
 
 
     // auto vibrate flywheel when around 220 rpm
-    if (FlywheelMotor.velocity(rpm) >= -220 && FlywheelMotor.velocity(rpm) <= -250) {
-      // Controller1.rumble(rumbleShort);
+    if (FlywheelMotor.velocity(rpm) <= -235 && FlywheelMotor.velocity(rpm) >= -240) {
+      Controller1.rumble(rumbleShort);
       // led on
-      LEDG.on();
+      // LEDG.on();
     } 
     // Controller1.rumble(rumbleShort);
 
