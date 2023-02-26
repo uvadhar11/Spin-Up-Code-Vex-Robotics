@@ -1112,21 +1112,35 @@ void autonomous(void) {
     // AUTON
 
     // drive forward
-    drivePID(300, 1);
+    // drivePID(300, 1);
 
-    // turn 90 degrees to rollers
-    turnPID(90, 1);
+    // // turn 90 degrees to rollers
+    // turnPID(90, 1);
 
-    // spin the rollers
-    if (allianceColor == "RED") {
-      while ((Optical.color() == vex::color::blue)) {
-        IntakeMotor.spin(fwd, 12, voltageUnits::volt);
-      }
-    }
-    else if (allianceColor == "BLUE") {
-      while ((Optical.color() == vex::color::red)) {
-        IntakeMotor.spin(fwd, 12, voltageUnits::volt);
-      }
+    // // spin the rollers
+    // if (allianceColor == "RED") {
+    //   while ((Optical.color() == vex::color::blue)) {
+    //     IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+    //   }
+    // }
+    // else if (allianceColor == "BLUE") {
+    //   while ((Optical.color() == vex::color::red)) {
+    //     IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+    //   }
+    // }
+
+    drivePID(400, 1);
+    // expand
+    for (int i = 0; i < 10; i++) {
+      // expand
+      Exp1.off();
+      Exp2.off();
+
+      wait(0.3, sec);
+      // piston back up
+      Exp1.on();
+      Exp2.on();
+      wait(0.3, sec);
     }
 
     // other stuff
@@ -1190,97 +1204,97 @@ void autonomous(void) {
 
     // SPIN ROLLERS
     IntakeMotor.spin(reverse, 12, volt);
-    wait(0.3, sec);
+    wait(0.2, sec);
     IntakeMotor.stop();
     FlywheelMotor.stop();
 
-    // move forward away from rollers a bit
-    drivePID(100, 1);
+    // // move forward away from rollers a bit
+    // drivePID(100, 1);
 
-    // turn in line with the white line
-    turnPID(45, 1);
+    // // turn in line with the white line
+    // turnPID(45, 1);
 
-    // drive fwd
-    drivePID(650, 1);
+    // // drive fwd
+    // drivePID(650, 1);
 
-    // shoot discs
-    turnPID(-7, 1);
+    // // shoot discs
+    // turnPID(-7, 1);
 
-    // spin flywheel motor
-    FlywheelMotor.spin(reverse, 12, volt);
+    // // spin flywheel motor
+    // FlywheelMotor.spin(reverse, 12, volt);
 
-    Brain.Screen.clearScreen();
+    // Brain.Screen.clearScreen();
 
-    // // once hits 270 ish then spin
-    while (FlywheelMotor.velocity(rpm) > -270) {
-      // piston
-      // Piston.on();
-      Brain.Screen.setCursor(5, 2);
-      Brain.Screen.print(FlywheelMotor.velocity(rpm));
-    }
-
-    IntakeMotor.spin(reverse, 12, volt);
-
-    wait(3, sec);
-    IntakeMotor.stop();
-    FlywheelMotor.stop();
-
-    // // firing 2 discs
-    // wait(0.1, sec);
-    // Piston.off();
-    // Piston.on();
-    // wait(0.1, sec);
-    // Piston.off();
-
-    // // turn intake facing 3 stack
-    turnPID(-130, 1); // 315
-
-    // // forward and intake
-    // IntakeMotor.spin(fwd, 12, volt);
-
-    // drivePID(-650, 0.10, true); // attempt for PID + intake - didn't really work
-    // but got one disc but then it stopped since that's what PID does.
-
-
-    LeftFrontMotor.spin(reverse, 2.5, volt);
-    RightFrontMotor.spin(reverse, 2.5, volt);
-    LeftMiddleMotor.spin(reverse, 2.5, volt);
-    RightMiddleMotor.spin(reverse, 2.5, volt);
-    LeftBackMotor.spin(reverse, 2.5, volt);
-    RightBackMotor.spin(reverse, 2.5, volt);
-    IntakeMotor.spin(fwd, 12, volt);
-
-
-
-    wait(4.2, sec);
+    // // // once hits 270 ish then spin
+    // while (FlywheelMotor.velocity(rpm) > -260) {
+    //   // piston
+    //   // Piston.on();
+    //   Brain.Screen.setCursor(5, 2);
+    //   Brain.Screen.print(FlywheelMotor.velocity(rpm));
+    // }
 
     // IntakeMotor.spin(reverse, 12, volt);
-    // wait(0.375, sec);
 
-    LeftFrontMotor.stop();
-    RightFrontMotor.stop();
-    LeftMiddleMotor.stop();
-    RightMiddleMotor.stop();
-    LeftBackMotor.stop();
-    RightBackMotor.stop();
-    IntakeMotor.stop();
+    // wait(3.8, sec);
+    // IntakeMotor.stop();
+    // FlywheelMotor.stop();
 
-    turnPID(-20, 1);
+    // // // firing 2 discs
+    // // wait(0.1, sec);
+    // // Piston.off();
+    // // Piston.on();
+    // // wait(0.1, sec);
+    // // Piston.off();
 
-    // shoot
-    // // once hits 270 ish then spin
-    while (FlywheelMotor.velocity(rpm) > -289) {
-      // piston
-      // Piston.on();
-      Brain.Screen.setCursor(5, 2);
-      Brain.Screen.print(FlywheelMotor.velocity(rpm));
-    }
+    // // // turn intake facing 3 stack
+    // turnPID(-130, 1); // 315
 
-    IntakeMotor.spin(reverse, 12, volt);
+    // // // forward and intake
+    // // IntakeMotor.spin(fwd, 12, volt);
 
-    wait(4, sec);
-    IntakeMotor.stop();
-    FlywheelMotor.stop();
+    // // drivePID(-650, 0.10, true); // attempt for PID + intake - didn't really work
+    // // but got one disc but then it stopped since that's what PID does.
+
+
+    // LeftFrontMotor.spin(reverse, 2.5, volt);
+    // RightFrontMotor.spin(reverse, 2.5, volt);
+    // LeftMiddleMotor.spin(reverse, 2.5, volt);
+    // RightMiddleMotor.spin(reverse, 2.5, volt);
+    // LeftBackMotor.spin(reverse, 2.5, volt);
+    // RightBackMotor.spin(reverse, 2.5, volt);
+    // IntakeMotor.spin(fwd, 12, volt);
+
+
+
+    // wait(4.23, sec);
+
+    // // IntakeMotor.spin(reverse, 12, volt);
+    // // wait(0.375, sec);
+
+    // LeftFrontMotor.stop();
+    // RightFrontMotor.stop();
+    // LeftMiddleMotor.stop();
+    // RightMiddleMotor.stop();
+    // LeftBackMotor.stop();
+    // RightBackMotor.stop();
+    // IntakeMotor.stop();
+
+    // turnPID(-20, 1);
+
+    // // shoot
+    // // // once hits 270 ish then spin
+    // while (FlywheelMotor.velocity(rpm) > -270) {
+    //   // piston
+    //   // Piston.on();
+    //   Brain.Screen.setCursor(5, 2);
+    //   Brain.Screen.print(FlywheelMotor.velocity(rpm));
+    // }
+
+    // IntakeMotor.spin(reverse, 12, volt);
+
+    // wait(5.5, sec);
+    // IntakeMotor.stop();
+    // FlywheelMotor.stop();
 
     Brain.Screen.clearScreen();
     Brain.Screen.print("Hello");
@@ -1329,14 +1343,43 @@ void autonomous(void) {
     // drivePID(-25);
 
     // SKILLS
-    LeftFrontMotor.spin(reverse, 12, volt);
-    RightFrontMotor.spin(fwd, 12, volt);
-    LeftMiddleMotor.spin(reverse, 12, volt);
-    RightMiddleMotor.spin(fwd, 12, volt);
-    LeftBackMotor.spin(reverse, 12, volt);
-    RightBackMotor.spin(fwd, 12, volt);
+    // LeftFrontMotor.spin(reverse, 12, volt);
+    // RightFrontMotor.spin(fwd, 12, volt);
+    // LeftMiddleMotor.spin(reverse, 12, volt);
+    // RightMiddleMotor.spin(fwd, 12, volt);
+    // LeftBackMotor.spin(reverse, 12, volt);
+    // RightBackMotor.spin(fwd, 12, volt);
 
-    wait(0.2, sec);
+    // wait(0.2, sec);
+
+    // LeftFrontMotor.stop();
+    // RightFrontMotor.stop();
+    // LeftMiddleMotor.stop();
+    // RightMiddleMotor.stop();
+    // LeftBackMotor.stop();
+    // RightBackMotor.stop();
+
+    // Exp1.off();
+    // Exp2.off();
+
+
+
+    // NEW PROG SKILLS
+    
+    // MOVE BACK TO ROLLERS
+    LeftFrontMotor.spin(reverse, 12, volt);
+    RightFrontMotor.spin(reverse, 12, volt);
+    LeftMiddleMotor.spin(reverse, 12, volt);
+    RightMiddleMotor.spin(reverse, 12, volt);
+    LeftBackMotor.spin(reverse, 12, volt);
+    RightBackMotor.spin(reverse, 12, volt);
+    FlywheelMotor.spin(fwd, 12, volt);
+
+
+    wait(0.1, sec);
+
+    // IntakeMotor.spin(reverse, 12, volt);
+    // wait(0.375, sec);
 
     LeftFrontMotor.stop();
     RightFrontMotor.stop();
@@ -1345,8 +1388,119 @@ void autonomous(void) {
     LeftBackMotor.stop();
     RightBackMotor.stop();
 
-    Exp1.off();
-    Exp2.off();
+    // SPIN ROLLERS
+    IntakeMotor.spin(reverse, 12, volt);
+    wait(0.3, sec);
+    IntakeMotor.stop();
+    FlywheelMotor.stop();
+
+    // move forward away from rollers a bit
+    drivePID(100, 1);
+
+    // turn in line with the white line
+    turnPID(45, 1);
+
+    // drive fwd
+    drivePID(650, 1);
+
+    // shoot discs
+    turnPID(-7, 1);
+
+    // spin flywheel motor
+    FlywheelMotor.spin(reverse, 12, volt);
+
+    Brain.Screen.clearScreen();
+
+    // // once hits 270 ish then spin
+    while (FlywheelMotor.velocity(rpm) > -260) {
+      // piston
+      // Piston.on();
+      Brain.Screen.setCursor(5, 2);
+      Brain.Screen.print(FlywheelMotor.velocity(rpm));
+    }
+
+    IntakeMotor.spin(reverse, 12, volt);
+
+    wait(3.8, sec);
+    IntakeMotor.stop();
+    FlywheelMotor.stop();
+
+    // // firing 2 discs
+    // wait(0.1, sec);
+    // Piston.off();
+    // Piston.on();
+    // wait(0.1, sec);
+    // Piston.off();
+
+    // // turn intake facing 3 stack
+    turnPID(-130, 1); // 315
+
+    // // forward and intake
+    // IntakeMotor.spin(fwd, 12, volt);
+
+    // drivePID(-650, 0.10, true); // attempt for PID + intake - didn't really work
+    // but got one disc but then it stopped since that's what PID does.
+
+
+    LeftFrontMotor.spin(reverse, 2.5, volt);
+    RightFrontMotor.spin(reverse, 2.5, volt);
+    LeftMiddleMotor.spin(reverse, 2.5, volt);
+    RightMiddleMotor.spin(reverse, 2.5, volt);
+    LeftBackMotor.spin(reverse, 2.5, volt);
+    RightBackMotor.spin(reverse, 2.5, volt);
+    IntakeMotor.spin(fwd, 12, volt);
+
+
+
+    wait(4.23, sec);
+
+    // IntakeMotor.spin(reverse, 12, volt);
+    // wait(0.375, sec);
+
+    LeftFrontMotor.stop();
+    RightFrontMotor.stop();
+    LeftMiddleMotor.stop();
+    RightMiddleMotor.stop();
+    LeftBackMotor.stop();
+    RightBackMotor.stop();
+    IntakeMotor.stop();
+
+    turnPID(-20, 1);
+
+    // shoot
+    // // once hits 270 ish then spin
+    while (FlywheelMotor.velocity(rpm) > -270) {
+      // piston
+      // Piston.on();
+      Brain.Screen.setCursor(5, 2);
+      Brain.Screen.print(FlywheelMotor.velocity(rpm));
+    }
+
+    IntakeMotor.spin(reverse, 12, volt);
+
+    wait(5.5, sec);
+    IntakeMotor.stop();
+    FlywheelMotor.stop();
+
+
+    // turn back
+    turnPID(50, 1);
+
+    // go back
+    drivePID(1370, 1);
+
+    // expand
+    for (int i = 0; i < 5; i++) {
+      // expand
+      Exp1.off();
+      Exp2.off();
+
+      wait(0.3, sec);
+      // piston back up
+      Exp1.on();
+      Exp2.on();
+      wait(0.3, sec);
+    }
 
   }
 }
@@ -1420,7 +1574,11 @@ void usercontrol(void) {
       // shoot stuff then once its shot back, might wanna reset or something so ye
       FlywheelMotor.spin(reverse, flywheelPower, voltageUnits::volt);
       // FlywheelMotor2.spin(fwd, 12, voltageUnits::volt);
-    } else {
+    } 
+    // else if (Controller1.ButtonUp.pressing()) {
+    //   FlywheelMotor.spin(fwd, 2, volt);
+    // } 
+    else {
       FlywheelMotor.stop();
       // FlywheelMotor2.stop();
     }
@@ -1446,18 +1604,18 @@ void usercontrol(void) {
     // AUTO-ROLLERS - Button X
     // allianceColor = "BLUE";
     // allianceColor = "RED";
-    if (Controller1.ButtonX.pressing()) {
-      if (allianceColor == "RED") {
-         while ((Optical.color() == vex::color::blue)) {
-           IntakeMotor.spin(fwd, 12, voltageUnits::volt);
-         }
-       }
-       else if (allianceColor == "BLUE") {
-         while ((Optical.color() == vex::color::red)) {
-           IntakeMotor.spin(fwd, 12, voltageUnits::volt);
-         }
-       }
-    }
+    // if (Controller1.ButtonX.pressing()) {
+    //   if (allianceColor == "RED") {
+    //      while ((Optical.color() == vex::color::blue)) {
+    //        IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+    //      }
+    //    }
+    //    else if (allianceColor == "BLUE") {
+    //      while ((Optical.color() == vex::color::red)) {
+    //        IntakeMotor.spin(fwd, 12, voltageUnits::volt);
+    //      }
+    //    }
+    // }
       // if (autoRollers) {
         // allianceColor = "RED";
         // if (allianceColor == "RED") { // red allianceColor == "RED"
@@ -1577,7 +1735,7 @@ void usercontrol(void) {
     // }
 
     if (Controller1.ButtonRight.pressing()) {
-      if (speed == 1) speed = 0.5;
+      if (speed == 1) speed = 0.25;
       else speed = 1;
     }
 
@@ -1590,7 +1748,7 @@ void usercontrol(void) {
 
 
     // auto vibrate flywheel when around 220 rpm
-    if (FlywheelMotor.velocity(rpm) <= -235 && FlywheelMotor.velocity(rpm) >= -240) {
+    if (FlywheelMotor.velocity(rpm) <= -220 && FlywheelMotor.velocity(rpm) >= -240) {
       Controller1.rumble(rumbleShort);
       // led on
       // LEDG.on();
