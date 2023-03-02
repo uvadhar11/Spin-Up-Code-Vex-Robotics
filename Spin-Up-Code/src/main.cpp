@@ -68,7 +68,7 @@ int ticks = 15000; // for faster turn speed. So doesn't break everything else if
 int flywheelPower = 9; // to manage flywheel speed
 bool flyjustUpdated = false;
 bool expand = false; // variable for allowing expanding up and down.
-bool pistonEnded = false;
+// bool pistonEnded = false;
 
 
 
@@ -1584,13 +1584,13 @@ void usercontrol(void) {
       // FlywheelMotor2.stop();
     }
 
-    if (Controller1.ButtonL1.pressing()) {
-      if (pistonExtended) {
-        Piston.off();
-      } else {
-        Piston.on();
-      }
-    }
+    // if (Controller1.ButtonL1.pressing()) {
+    //   if (pistonExtended) {
+    //     Piston.off();
+    //   } else {
+    //     Piston.on();
+    //   }
+    // }
 
     // if (Controller1.ButtonDown.pressing()) {
     //   if (flywheelPower == 8) flywheelPower = 12;
