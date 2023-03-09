@@ -16,6 +16,7 @@
 #include <string>
 
 #include "vex.h"
+#include "linking.h"
 
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
@@ -1502,6 +1503,117 @@ void autonomous(void) {
       Exp2.on();
       wait(0.3, sec);
     }
+
+
+
+    // drive forward
+    drivePID(300, 1);
+
+    // turn 90 degrees to rollers
+    turnPID(90, 1);
+    FlywheelMotor.stop();
+
+    // move forward away from rollers a bit
+    drivePID(100, 1);
+
+    // turn in line with the white line
+    turnPID(45, 1);
+
+    // drive fwd
+    drivePID(650, 1);
+
+    // shoot discs
+    turnPID(-90, 1);
+    turnPID(-7, 1);
+
+    // spin flywheel motor
+    FlywheelMotor.spin(reverse, 12, volt);
+
+    // once hits 270 ish then spin
+    while (FlywheelMotor.velocity(rpm) < 270) {
+    Brain.Screen.clearScreen();
+
+    // // once hits 270 ish then spin
+    while (FlywheelMotor.velocity(rpm) > -289) {
+      // piston
+      Piston.on();
+      // Piston.on();
+      Brain.Screen.setCursor(5, 2);
+      Brain.Screen.print(FlywheelMotor.velocity(rpm));
+    }
+
+    // firing 2 discs
+    wait(0.1, sec);
+    Piston.off();
+    Piston.on();
+    wait(0.1, sec);
+    Piston.off();
+    IntakeMotor.spin(reverse, 12, volt);
+
+    wait(3, sec);
+    IntakeMotor.stop();
+    FlywheelMotor.stop();
+
+    // // firing 2 discs
+    // wait(0.1, sec);
+    // Piston.off();
+    // Piston.on();
+    // wait(0.1, sec);
+    // Piston.off();
+
+    // // turn intake facing 3 stack
+    turnPID(-130, 1); // 315
+
+    // // forward and intake
+    // IntakeMotor.spin(fwd, 12, volt);
+
+    // turn intake facing 3 stack
+    turnPID(-15, 1); // 315
+    // drivePID(-650, 0.10, true); // attempt for PID + intake - didn't really work
+    // but got one disc but then it stopped since that's what PID does.
+
+    // forward and intake
+
+    LeftFrontMotor.spin(reverse, 2.5, volt);
+    RightFrontMotor.spin(reverse, 2.5, volt);
+    LeftMiddleMotor.spin(reverse, 2.5, volt);
+    RightMiddleMotor.spin(reverse, 2.5, volt);
+    LeftBackMotor.spin(reverse, 2.5, volt);
+    RightBackMotor.spin(reverse, 2.5, volt);
+    IntakeMotor.spin(fwd, 12, volt);
+    drivePID(322, 1);
+
+
+
+    wait(4.2, sec);
+
+    // IntakeMotor.spin(reverse, 12, volt);
+    // wait(0.375, sec);
+
+    LeftFrontMotor.stop();
+    RightFrontMotor.stop();
+    LeftMiddleMotor.stop();
+    RightMiddleMotor.stop();
+    LeftBackMotor.stop();
+    RightBackMotor.stop();
+    IntakeMotor.stop();
+
+    turnPID(-20, 1);
+
+    // shoot
+    // // once hits 270 ish then spin
+    while (FlywheelMotor.velocity(rpm) > -289) {
+      // piston
+      // Piston.on();
+      Brain.Screen.setCursor(5, 2);
+      Brain.Screen.print(FlywheelMotor.velocity(rpm));
+    }
+
+    IntakeMotor.spin(reverse, 12, volt);
+
+    wait(4, sec);
+    IntakeMotor.stop();
+    FlywheelMotor.stop();
 
   }
 }
