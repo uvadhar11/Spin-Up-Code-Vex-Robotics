@@ -1,5 +1,11 @@
 #include "vex.h"
+using namespace std;
+#include <iostream>
 
+// VARIABLES
+int selfCorrect = 3;
+
+// drive PID - 2 parameters
 void drivePID(int desiredValue, double multiplier){
   //Settings - variables initializations
   double kP = 0.115; // 0.11
