@@ -438,7 +438,7 @@ void usercontrol(void) {
     // << std::endl; 
 
     // update flywheel power
-    if (Controller1.ButtonDown.pressing()) {
+    if (Controller1.ButtonDown.pressing() || Controller2.ButtonDown.pressing()) {
       if (flywheelPower == 12) {
         flywheelPower = 10;
       }
@@ -459,13 +459,24 @@ void usercontrol(void) {
     Controller1.Screen.setCursor(3,11);
     Controller1.Screen.print(flywheelPower);
 
+    // Controller2.Screen.setCursor(3,1);
+    // Controller2.Screen.print("Flywheel: ");
+    // Controller2.Screen.setCursor(3,11);
+    // Controller2.Screen.print(flywheelPower);
+
     // flywheel velocity
     Controller1.Screen.setCursor(3, 14);
     Controller1.Screen.print(FlywheelMotor.velocity(rpm));
 
+    // Controller2.Screen.setCursor(3, 14);
+    // Controller2.Screen.print(FlywheelMotor.velocity(rpm));
+
     if (flywheelPower != 12 && flywheelPower!= 10) {
       Controller1.Screen.setCursor(3, 12);
       Controller1.Screen.print(" ");
+
+      // Controller2.Screen.setCursor(3, 12);
+      // Controller2.Screen.print(" ");
     }
 
     if (Controller1.ButtonL2.pressing() || Controller2.ButtonL2.pressing()) {
@@ -489,27 +500,27 @@ void usercontrol(void) {
     // 2ND CONTROLLER CODE
 
     // Battery voltage
-    Controller2.Screen.setCursor(1,1);
-    Controller2.Screen.print(vexBatteryVoltageGet());
+    // Controller2.Screen.setCursor(1,1);
+    // Controller2.Screen.print(vexBatteryVoltageGet());
 
     // LINE 1
     // motor temp
-    Controller2.Screen.setCursor(2,1);
-    Controller2.Screen.print(IntakeMotor.temperature());
+    // Controller2.Screen.setCursor(2,1);
+    // Controller2.Screen.print(IntakeMotor.temperature());
 
     // flywheel temp
-    Controller2.Screen.setCursor(2,5);
-    Controller2.Screen.print(FlywheelMotor.temperature());
+    // Controller2.Screen.setCursor(2,5);
+    // Controller2.Screen.print(FlywheelMotor.temperature());
 
 
     // LINE 3
     // flywheel rpm
-    Controller2.Screen.setCursor(3,1);
-    Controller2.Screen.print(FlywheelMotor.velocity(rpm));
+    // Controller2.Screen.setCursor(3,1);
+    // Controller2.Screen.print(FlywheelMotor.velocity(rpm));
 
     // intake rpm
-    Controller2.Screen.setCursor(3,5);
-    Controller2.Screen.print(IntakeMotor.velocity(rpm));
+    // Controller2.Screen.setCursor(3,5);
+    // Controller2.Screen.print(IntakeMotor.velocity(rpm));
 
     wait(20, msec); // Sleep the task for a short amount of time to prevent wasted resources
   }
