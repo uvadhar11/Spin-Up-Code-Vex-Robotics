@@ -36,6 +36,7 @@
 // Inertial             inertial      20              
 // LEDG                 led           G               
 // Piston               led           C               
+// Controller2          controller                    
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 using namespace vex;
@@ -370,6 +371,9 @@ void usercontrol(void) {
     double turnImportance = 1; // for changing the turn speed faster I think
     double speed = 1; // changing speed
 
+    // intializing stuff
+    Controller2.Screen.clearScreen(); // clear controller 2 screen.
+
   while (true) {
     // This is the main execution loop for the user control program.
     // Each time through the loop your program should update motor + servo
@@ -464,7 +468,7 @@ void usercontrol(void) {
       Controller1.Screen.print(" ");
     }
 
-    if (Controller1.ButtonRight.pressing()) {
+    if (Controller1.ButtonL2.pressing() || Controller2.ButtonL2.pressing()) {
       if (speed == 1) speed = 0.25;
       else speed = 1;
     }
@@ -480,6 +484,32 @@ void usercontrol(void) {
     if (FlywheelMotor.velocity(rpm) <= -220 && FlywheelMotor.velocity(rpm) >= -240) {
       Controller1.rumble(rumbleShort);
     } 
+
+
+    // 2ND CONTROLLER CODE
+
+    // Battery voltage
+    Controller2.Screen.setCursor(1,1);
+    Controller2.Screen.print(vexBatteryVoltageGet());
+
+    // LINE 1
+    // motor temp
+    Controller2.Screen.setCursor(2,1);
+    Controller2.Screen.print(IntakeMotor.temperature());
+
+    // flywheel temp
+    Controller2.Screen.setCursor(2,5);
+    Controller2.Screen.print(FlywheelMotor.temperature());
+
+
+    // LINE 3
+    // flywheel rpm
+    Controller2.Screen.setCursor(3,1);
+    Controller2.Screen.print(FlywheelMotor.velocity(rpm));
+
+    // intake rpm
+    Controller2.Screen.setCursor(3,5);
+    Controller2.Screen.print(IntakeMotor.velocity(rpm));
 
     wait(20, msec); // Sleep the task for a short amount of time to prevent wasted resources
   }

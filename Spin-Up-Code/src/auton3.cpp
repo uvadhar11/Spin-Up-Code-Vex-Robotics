@@ -5,6 +5,88 @@ using namespace std;
 
 void auton3() {
   // MOVE BACK TO ROLLERS
+
+  // UMCOMMENT OUT BEFORE COMP....
+    // LeftFrontMotor.spin(reverse, 12, volt);
+    // RightFrontMotor.spin(reverse, 12, volt);
+    // LeftMiddleMotor.spin(reverse, 12, volt);
+    // RightMiddleMotor.spin(reverse, 12, volt);
+    // LeftBackMotor.spin(reverse, 12, volt);
+    // RightBackMotor.spin(reverse, 12, volt);
+    // FlywheelMotor.spin(fwd, 12, volt);
+
+
+    // wait(0.1, sec);
+
+    // LeftFrontMotor.stop();
+    // RightFrontMotor.stop();
+    // LeftMiddleMotor.stop();
+    // RightMiddleMotor.stop();
+    // LeftBackMotor.stop();
+    // RightBackMotor.stop();
+
+    // // SPIN ROLLERS
+    // IntakeMotor.spin(reverse, 12, volt);
+    // wait(0.2, sec);
+    // IntakeMotor.stop();
+    // FlywheelMotor.stop();
+
+    // start fly spooling up
+    FlywheelMotor.spin(reverse, 12, volt);
+
+    // // move forward away from rollers a bit
+    drivePID(250, 1);
+
+    // turn to high goal
+    turnPID(-9, 1);
+
+    // spool up
+    // wait(3, sec);
+    while (FlywheelMotor.velocity(rpm) > -300) {
+
+    }
+
+    // shoot
+    IntakeMotor.spin(reverse, 12, volt);
+    wait(1, sec);
+    // IntakeMotor.stop();
+    // wait(0.1, sec);
+    // IntakeMotor.spin(reverse, 12, volt);
+    // wait(0.15, sec);
+
+    FlywheelMotor.stop();
+    IntakeMotor.stop();
+
+    wait(0.15, sec);
+
+    // turn to the 3 stack
+    // turnPID(-130, 1);
+
+    // // intake and drive
+    // IntakeMotor.spin(fwd, 12, volt);
+    // drivePID(650, 1);
+    // drivePID(325, 1);
+    // drivePID(325, 1);
+
+    // IntakeMotor.stop();
+    // FlywheelMotor.spin(reverse, 12, volt);
+    // turnPID(45, 1);
+    // wait(3, sec);
+
+    // // shooting
+    // for (int i = 0; i < 3; i++) {
+    //   IntakeMotor.spin(reverse, 12, volt);
+    //   wait(0.15, sec);
+    //   IntakeMotor.stop();
+    //   wait(0.1, sec);
+    // }
+
+
+
+
+
+
+    // drive backwards a little bit to rollers
     LeftFrontMotor.spin(reverse, 12, volt);
     RightFrontMotor.spin(reverse, 12, volt);
     LeftMiddleMotor.spin(reverse, 12, volt);
@@ -13,12 +95,10 @@ void auton3() {
     RightBackMotor.spin(reverse, 12, volt);
     FlywheelMotor.spin(fwd, 12, volt);
 
-
+    // wait for 0.1 seconds to allow the robot to drive back to the rollers
     wait(0.1, sec);
 
-    // IntakeMotor.spin(reverse, 12, volt);
-    // wait(0.375, sec);
-
+    // stop the motors once at the rollers
     LeftFrontMotor.stop();
     RightFrontMotor.stop();
     LeftMiddleMotor.stop();
@@ -26,100 +106,90 @@ void auton3() {
     LeftBackMotor.stop();
     RightBackMotor.stop();
 
-    // SPIN ROLLERS
+    // Spin the rollers and have flywheel spinning backwards so discs don't fly out
     IntakeMotor.spin(reverse, 12, volt);
     wait(0.2, sec);
     IntakeMotor.stop();
     FlywheelMotor.stop();
 
-    // // move forward away from rollers a bit
-    // drivePID(100, 1);
+    // drive away from the rollers a little
+    drivePID(100, 1);
 
-    // // turn in line with the white line
-    // turnPID(45, 1);
+    // turn in line with the white line
+    turnPID(45, 1);
 
-    // // drive fwd
-    // drivePID(650, 1);
+    // drive forward just before the 3 stack
+    drivePID(650, 1);
 
-    // // shoot discs
-    // turnPID(-7, 1);
+    // turn to the high goal
+    turnPID(-7, 1);
 
-    // // spin flywheel motor
-    // FlywheelMotor.spin(reverse, 12, volt);
+    // spin flywheel motor
+    FlywheelMotor.spin(reverse, 12, volt);
 
-    // Brain.Screen.clearScreen();
-
-    // // // once hits 270 ish then spin
-    // while (FlywheelMotor.velocity(rpm) > -260) {
-    //   // piston
-    //   // Piston.on();
-    //   Brain.Screen.setCursor(5, 2);
-    //   Brain.Screen.print(FlywheelMotor.velocity(rpm));
-    // }
-
-    // IntakeMotor.spin(reverse, 12, volt);
-
-    // wait(3.8, sec);
-    // IntakeMotor.stop();
-    // FlywheelMotor.stop();
-
-    // // // firing 2 discs
-    // // wait(0.1, sec);
-    // // Piston.off();
-    // // Piston.on();
-    // // wait(0.1, sec);
-    // // Piston.off();
-
-    // // // turn intake facing 3 stack
-    // turnPID(-130, 1); // 315
-
-    // // // forward and intake
-    // // IntakeMotor.spin(fwd, 12, volt);
-
-    // // drivePID(-650, 0.10, true); // attempt for PID + intake - didn't really work
-    // // but got one disc but then it stopped since that's what PID does.
-
-
-    // LeftFrontMotor.spin(reverse, 2.5, volt);
-    // RightFrontMotor.spin(reverse, 2.5, volt);
-    // LeftMiddleMotor.spin(reverse, 2.5, volt);
-    // RightMiddleMotor.spin(reverse, 2.5, volt);
-    // LeftBackMotor.spin(reverse, 2.5, volt);
-    // RightBackMotor.spin(reverse, 2.5, volt);
-    // IntakeMotor.spin(fwd, 12, volt);
-
-
-
-    // wait(4.23, sec);
-
-    // // IntakeMotor.spin(reverse, 12, volt);
-    // // wait(0.375, sec);
-
-    // LeftFrontMotor.stop();
-    // RightFrontMotor.stop();
-    // LeftMiddleMotor.stop();
-    // RightMiddleMotor.stop();
-    // LeftBackMotor.stop();
-    // RightBackMotor.stop();
-    // IntakeMotor.stop();
-
-    // turnPID(-20, 1);
-
-    // // shoot
-    // // // once hits 270 ish then spin
-    // while (FlywheelMotor.velocity(rpm) > -270) {
-    //   // piston
-    //   // Piston.on();
-    //   Brain.Screen.setCursor(5, 2);
-    //   Brain.Screen.print(FlywheelMotor.velocity(rpm));
-    // }
-
-    // IntakeMotor.spin(reverse, 12, volt);
-
-    // wait(5.5, sec);
-    // IntakeMotor.stop();
-    // FlywheelMotor.stop();
-
+    // clear brain screen
     Brain.Screen.clearScreen();
-    Brain.Screen.print("Hello");
+
+    // once the flywheel hits 270-ish, spin the indexer
+    while (FlywheelMotor.velocity(rpm) > -270) {
+      // print flywheel velocity to the brain so I can see
+      Brain.Screen.setCursor(5, 2);
+      Brain.Screen.print(FlywheelMotor.velocity(rpm));
+    }
+
+    // index
+    IntakeMotor.spin(reverse, 12, volt);
+
+    // index for this time to let all the discs shoot out
+    wait(3.8, sec);
+
+    // stop flywheel and intake motor
+    IntakeMotor.stop();
+    FlywheelMotor.stop();
+
+    // turn with the intake facing the 3 stack
+    turnPID(-130, 1); 
+
+    // drive and intake the 3 stack
+    LeftFrontMotor.spin(reverse, 2.5, volt);
+    RightFrontMotor.spin(reverse, 2.5, volt);
+    LeftMiddleMotor.spin(reverse, 2.5, volt);
+    RightMiddleMotor.spin(reverse, 2.5, volt);
+    LeftBackMotor.spin(reverse, 2.5, volt);
+    RightBackMotor.spin(reverse, 2.5, volt);
+    IntakeMotor.spin(fwd, 12, volt);
+
+    wait(4.23, sec);
+
+    // stop the motors after the above time is up
+    LeftFrontMotor.stop();
+    RightFrontMotor.stop();
+    LeftMiddleMotor.stop();
+    RightMiddleMotor.stop();
+    LeftBackMotor.stop();
+    RightBackMotor.stop();
+    IntakeMotor.stop();
+
+    // turn to the high goal
+    turnPID(-20, 1);
+
+    // shoot - once the flywheel hits around 270 rpm, spin indexer
+    while (FlywheelMotor.velocity(rpm) > -270) {
+      Brain.Screen.setCursor(5, 2);
+      Brain.Screen.print(FlywheelMotor.velocity(rpm));
+    }
+
+    // spin indexer
+    IntakeMotor.spin(reverse, 12, volt);
+
+    // wait to allow all the discs to index out
+    wait(5.5, sec);
+
+    // stop the motors
+    IntakeMotor.stop();
+    FlywheelMotor.stop();
+
+    // printing to signify the auton is over
+    Brain.Screen.clearScreen();
+    Brain.Screen.print("Auton Completed!");
 }

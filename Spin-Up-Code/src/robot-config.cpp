@@ -23,6 +23,7 @@ motor IntakeMotor = motor(PORT8, ratio6_1, false);
 inertial Inertial = inertial(PORT20);
 led LEDG = led(Brain.ThreeWirePort.G);
 led Piston = led(Brain.ThreeWirePort.C);
+controller Controller2 = controller(partner);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable

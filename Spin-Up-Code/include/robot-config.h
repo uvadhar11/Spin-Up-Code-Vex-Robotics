@@ -18,6 +18,7 @@ extern motor IntakeMotor;
 extern inertial Inertial;
 extern led LEDG;
 extern led Piston;
+extern controller Controller2;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
