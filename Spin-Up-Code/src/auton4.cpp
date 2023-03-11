@@ -43,18 +43,18 @@ void auton4() {
 
   // SPIN ROLLERS
   IntakeMotor.spin(reverse, 12, volt);
-  wait(0.2, sec);
+  wait(0.4, sec);
   IntakeMotor.stop();
   FlywheelMotor.stop();
 
 
   // turn and intake the other disc
   drivePID(325, 1);
-  turnPID(-90, 1);
+  turnPID(90, 1);
 
   // turn and drive to rollers
   IntakeMotor.spin(fwd, 12, volt);
-  drivePID(650, 1);
+  drivePID(-650, 1);
 
   // SPIN ROLLERS
   LeftFrontMotor.spin(reverse, 12, volt);
@@ -75,14 +75,16 @@ void auton4() {
   RightBackMotor.stop();
 
   IntakeMotor.spin(reverse, 12, volt);
-  wait(0.2, sec);
+  wait(0.4, sec);
   IntakeMotor.stop();
   FlywheelMotor.stop();
 
   // go to high goal
-  drivePID(100, 1);
-  turnPID(90, 1);
-  drivePID(1300, 1);
+  drivePID(200, 1);
+  drivePID(-100, 1);
+  turnPID(3, 1);
+  drivePID(1800, 1);
+  turnPID(13, 1);
 
   // shoot
   FlywheelMotor.spin(reverse, 9, volt);
@@ -98,14 +100,15 @@ void auton4() {
   wait(0.1, sec);
 
   // after shooting drive back
-  drivePID(-650, 1);
+  drivePID(-1350, 1);
 
   // turn towards 3 stack
-  turnPID(90, 1);
+  turnPID(-135, 1); // 90
 
   // intake the 3 stack
   IntakeMotor.spin(fwd, 12, volt);
-  drivePID(900, 0.5);
+  drivePID(-900, 0.5);
+
 
   // one you have intaked the 3 stack, drive back to shoot in high goal
   turnPID(45, 1);

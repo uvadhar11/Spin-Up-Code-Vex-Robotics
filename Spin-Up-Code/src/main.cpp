@@ -320,7 +320,7 @@ void pre_auton(void) {
   // initalizeAllianceColorSelector(); // set the start alliance color selection conditions
 
   // Brain.Screen.pressed(autonScreenSelector);
-  autonSelected = 3;
+  autonSelected = 4;
 }
 
 
