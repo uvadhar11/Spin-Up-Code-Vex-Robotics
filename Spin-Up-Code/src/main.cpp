@@ -316,11 +316,11 @@ void pre_auton(void) {
   Inertial.calibrate();
 
   // AUTON SCREEN SELECTOR STUFF 
-  // initalizeAutonSelector(); // set the start rectangle conditions
-  // initalizeAllianceColorSelector(); // set the start alliance color selection conditions
+  initalizeAutonSelector(); // set the start rectangle conditions
+  initalizeAllianceColorSelector(); // set the start alliance color selection conditions
 
-  // Brain.Screen.pressed(autonScreenSelector);
-  autonSelected = 4;
+  Brain.Screen.pressed(autonScreenSelector);
+  // autonSelected = 4;
 }
 
 
@@ -372,7 +372,7 @@ void usercontrol(void) {
     double speed = 1; // changing speed
 
     // intializing stuff
-    Controller2.Screen.clearScreen(); // clear controller 2 screen.
+    // Controller2.Screen.clearScreen(); // clear controller 2 screen.
 
   while (true) {
     // This is the main execution loop for the user control program.
@@ -438,7 +438,7 @@ void usercontrol(void) {
     // << std::endl; 
 
     // update flywheel power
-    if (Controller1.ButtonDown.pressing() || Controller2.ButtonDown.pressing()) {
+    if (Controller1.ButtonDown.pressing()) {
       if (flywheelPower == 12) {
         flywheelPower = 10;
       }
@@ -496,20 +496,22 @@ void usercontrol(void) {
       Controller1.rumble(rumbleShort);
     } 
 
-
     // 2ND CONTROLLER CODE
 
     // Battery voltage
     // Controller2.Screen.setCursor(1,1);
     // Controller2.Screen.print(vexBatteryVoltageGet());
 
-    // LINE 1
-    // motor temp
+    // // LINE 1
+    // // motor temp
     // Controller2.Screen.setCursor(2,1);
+    // Controller2.Screen.print("IT:");
+    // // Controller2.Screen.setCursor(2, 5);
     // Controller2.Screen.print(IntakeMotor.temperature());
 
-    // flywheel temp
-    // Controller2.Screen.setCursor(2,5);
+    // // flywheel temp
+    // Controller2.Screen.setCursor(2,10);
+    // Controller2.Screen.print("FT:");
     // Controller2.Screen.print(FlywheelMotor.temperature());
 
 

@@ -79,46 +79,63 @@ void auton4() {
   IntakeMotor.stop();
   FlywheelMotor.stop();
 
-  // go to high goal
-  drivePID(200, 1);
-  drivePID(-100, 1);
-  turnPID(3, 1);
-  drivePID(1800, 1);
-  turnPID(13, 1);
 
-  // shoot
-  FlywheelMotor.spin(reverse, 9, volt);
+  // testing other stuff
+  
 
-  // rpm
-  while (FlywheelMotor.velocity(rpm) > -280) {
-
-  }
-  IntakeMotor.spin(reverse, 12, volt);
-  wait(2, sec);
-  IntakeMotor.stop();
-  FlywheelMotor.stop();
-  wait(0.1, sec);
-
-  // after shooting drive back
-  drivePID(-1350, 1);
-
-  // turn towards 3 stack
-  turnPID(-135, 1); // 90
-
-  // intake the 3 stack
-  IntakeMotor.spin(fwd, 12, volt);
-  drivePID(-900, 0.5);
-
-
-  // one you have intaked the 3 stack, drive back to shoot in high goal
+  // insert exp thing and turning to exp
+  drivePID(800, 1);
   turnPID(45, 1);
+  drivePID(-200, 1);
+  Exp1.off();
+  Exp2.off();
 
-  FlywheelMotor.spin(reverse, 12, volt);
-  wait(3, sec);
-  IntakeMotor.spin(reverse, 12, volt);
-  wait(2.5, sec);
-  FlywheelMotor.stop();
-  IntakeMotor.stop();
+  Exp1.on();
+  Exp2.on();
+
+  Exp1.off();
+  Exp2.off();
+
+  // go to high goal
+  // drivePID(200, 1);
+  // drivePID(-100, 1);
+  // turnPID(3, 1);
+  // drivePID(1800, 1);
+  // turnPID(13, 1);
+
+  // // shoot
+  // FlywheelMotor.spin(reverse, 9, volt);
+
+  // // rpm
+  // while (FlywheelMotor.velocity(rpm) > -280) {
+
+  // }
+  // IntakeMotor.spin(reverse, 12, volt);
+  // wait(2, sec);
+  // IntakeMotor.stop();
+  // FlywheelMotor.stop();
+  // wait(0.1, sec);
+
+  // // after shooting drive back
+  // drivePID(-1350, 1);
+
+  // // turn towards 3 stack
+  // turnPID(-135, 1); // 90
+
+  // // intake the 3 stack
+  // IntakeMotor.spin(fwd, 12, volt);
+  // drivePID(-900, 0.5);
+
+
+  // // one you have intaked the 3 stack, drive back to shoot in high goal
+  // turnPID(45, 1);
+
+  // FlywheelMotor.spin(reverse, 12, volt);
+  // wait(3, sec);
+  // IntakeMotor.spin(reverse, 12, volt);
+  // wait(2.5, sec);
+  // FlywheelMotor.stop();
+  // IntakeMotor.stop();
 
   // now intake the other 3 discs
   // might have to go back to near high goal and shoot.

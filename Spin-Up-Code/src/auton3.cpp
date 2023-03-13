@@ -112,7 +112,7 @@ void auton3() {
     IntakeMotor.stop();
     FlywheelMotor.stop();
 
-    // spin flywheel motor
+    // // spin flywheel motor
     FlywheelMotor.spin(reverse, 12, volt);
 
     // drive away from the rollers a little
@@ -125,7 +125,7 @@ void auton3() {
     drivePID(650, 1);
 
     // turn to the high goal
-    turnPID(-7, 1);
+    turnPID(-11, 1);
 
     // // spin flywheel motor
     // FlywheelMotor.spin(reverse, 12, volt);
@@ -134,7 +134,7 @@ void auton3() {
     Brain.Screen.clearScreen();
 
     // once the flywheel hits 270-ish, spin the indexer
-    while (FlywheelMotor.velocity(rpm) > -330) {
+    while (FlywheelMotor.velocity(rpm) > -380) { // -330
       // print flywheel velocity to the brain so I can see
       Brain.Screen.setCursor(5, 2);
       Brain.Screen.print(FlywheelMotor.velocity(rpm));
@@ -157,50 +157,50 @@ void auton3() {
     // FlywheelMotor.stop();
 
     // turn with the intake facing the 3 stack
-    turnPID(-127, 1); 
+    // turnPID(-127, 1); 
 
-    // drive and intake the 3 stack
-    LeftFrontMotor.spin(reverse, 3.5, volt);
-    RightFrontMotor.spin(reverse, 3.5, volt);
-    LeftMiddleMotor.spin(reverse, 3.5, volt);
-    RightMiddleMotor.spin(reverse, 3.5, volt);
-    LeftBackMotor.spin(reverse, 3.5, volt);
-    RightBackMotor.spin(reverse, 3.5, volt);
-    IntakeMotor.spin(fwd, 12, volt);
+    // // drive and intake the 3 stack
+    // LeftFrontMotor.spin(reverse, 3.5, volt);
+    // RightFrontMotor.spin(reverse, 3.5, volt);
+    // LeftMiddleMotor.spin(reverse, 3.5, volt);
+    // RightMiddleMotor.spin(reverse, 3.5, volt);
+    // LeftBackMotor.spin(reverse, 3.5, volt);
+    // RightBackMotor.spin(reverse, 3.5, volt);
+    // IntakeMotor.spin(fwd, 12, volt);
 
-    wait(3, sec);
+    // wait(3, sec);
 
-    // stop the motors after the above time is up
-    LeftFrontMotor.stop();
-    RightFrontMotor.stop();
-    LeftMiddleMotor.stop();
-    RightMiddleMotor.stop();
-    LeftBackMotor.stop();
-    RightBackMotor.stop();
+    // // stop the motors after the above time is up
+    // LeftFrontMotor.stop();
+    // RightFrontMotor.stop();
+    // LeftMiddleMotor.stop();
+    // RightMiddleMotor.stop();
+    // LeftBackMotor.stop();
+    // RightBackMotor.stop();
+    // // IntakeMotor.stop();
+
+    // // turn to the high goal
+    // FlywheelMotor.stop();
+    // turnPID(-39, 1); // -27
+    // wait(0.5, sec);
     // IntakeMotor.stop();
 
-    // turn to the high goal
-    FlywheelMotor.stop();
-    turnPID(-39, 1); // -27
-    wait(0.5, sec);
-    IntakeMotor.stop();
+    // FlywheelMotor.spin(reverse, 12, volt);
+    // // shoot - once the flywheel hits around 270 rpm, spin indexer
+    // while (FlywheelMotor.velocity(rpm) > -330) {
+    //   Brain.Screen.setCursor(5, 2);
+    //   Brain.Screen.print(FlywheelMotor.velocity(rpm));
+    // }
 
-    FlywheelMotor.spin(reverse, 12, volt);
-    // shoot - once the flywheel hits around 270 rpm, spin indexer
-    while (FlywheelMotor.velocity(rpm) > -330) {
-      Brain.Screen.setCursor(5, 2);
-      Brain.Screen.print(FlywheelMotor.velocity(rpm));
-    }
+    // // spin indexer
+    // IntakeMotor.spin(reverse, 12, volt);
 
-    // spin indexer
-    IntakeMotor.spin(reverse, 12, volt);
+    // // wait to allow all the discs to index out
+    // wait(2.5, sec);
 
-    // wait to allow all the discs to index out
-    wait(2.5, sec);
-
-    // stop the motors
-    IntakeMotor.stop();
-    FlywheelMotor.stop();
+    // // stop the motors
+    // IntakeMotor.stop();
+    // FlywheelMotor.stop();
 
     // printing to signify the auton is over
     Brain.Screen.clearScreen();
